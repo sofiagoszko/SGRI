@@ -1,0 +1,42 @@
+package com.api.sgri.controller;
+
+import com.api.sgri.model.CategoriaTipo;
+import com.api.sgri.service.CategoriaTipoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.api.sgri.dto.CategoriaTipoDTO;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("api/categoria")
+@CrossOrigin(origins = "*")
+public class CategoriaTipoController {
+
+    @Autowired
+    private CategoriaTipoService categoriaTipoService;
+
+    // Obtener todas las categorías
+    @GetMapping("/todas")
+    public ResponseEntity<List<CategoriaTipo>> getCategorias() {
+        return ResponseEntity.ok(categoriaTipoService.obtenerCategorias());
+    }
+
+    // Obtener categorías de un tipo de requerimiento específico
+    @GetMapping("/tipo/{id}")
+    public ResponseEntity<List<CategoriaTipo>> getCategoriasPorTipo(@PathVariable Long id) {
+        return ResponseEntity.ok(categoriaTipoService.obtenerCategoriasPorTipo(id));
+    }
+
+    // Crear una nueva categoría
+    @PostMapping("/nueva")
+    public ResponseEntity<CategoriaTipo> createCategoria(@RequestBody Map<String, Object> request) {
+        String descripcion = (String) request.get("descripcion");
+        Long tipoRequerimientoId = ((Number) request.get("tipoRequerimientoId")).longValue();
+
+        CategoriaTipo nuevaCategoria = categoriaTipoService.crearCategoria(descripcion, tipoRequerimientoId);
+        return ResponseEntity.ok(nuevaCategoria);
+    }
+}
