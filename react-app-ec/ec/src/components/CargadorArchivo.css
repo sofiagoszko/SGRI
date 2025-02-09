@@ -1,0 +1,80 @@
+.custum-file-upload {
+	min-height: 100px;
+	max-width: 300px;
+	min-width: 200px;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	padding: 10px;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+	border: 2px dashed #cacaca;
+	background-color: rgba(255, 255, 255, 1);
+	border-radius: 10px;
+	object-fit: contain;
+	overflow: hidden;
+	box-shadow: 0px 48px 35px -48px rgba(0,0,0,0.1);
+	transition: all 0.3s ease;
+	position: relative
+}
+
+	.custum-file-upload.with-image {
+		max-height: 200px;
+		max-width: 300px;
+		padding: 0px;
+	}
+
+	.custum-file-upload.dragging {
+		border-color: #4CCEC4;
+	}
+
+	.custum-file-upload .icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+		.custum-file-upload .icon svg {
+			height: 80px;
+			fill: rgba(75, 85, 99, 1);
+		}
+
+	.custum-file-upload .text {
+		display: flex;
+		align-items: center;
+		text-align: center;
+	}
+
+		.custum-file-upload .text span {
+			font-weight: 400;
+			color: rgba(75, 85, 99, 1);
+		}
+
+	.custum-file-upload input {
+		display: none;
+	}
+
+.preview {
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	display: flex;
+	padding: 5px;
+}
+
+	.preview img {
+		max-width: 100%;
+		max-height: 100%;
+		object-fit: contain;
+	}
+
+.eliminar-imagen {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	z-index: 10;
+}

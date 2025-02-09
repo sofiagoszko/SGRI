@@ -1,0 +1,7 @@
+.content-placeholder {
+  width: calc(100% - 3rem);
+}
+
+.bg-placeholder-grey {
+  background-color: #414141;
+}

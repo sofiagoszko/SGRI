@@ -1,0 +1,67 @@
+body {
+  background-color: #eef7ee;
+}
+
+.layout__header {
+  display: grid;
+  grid-auto-rows: 1fr;
+  grid-auto-columns: 400px 1fr;
+}
+
+.card.card__user {
+  width: clamp(300px, 400px, 100%);
+  background: linear-gradient(#84a98c 0%, #84a98c 40%, white 40%, white 100%);
+  grid-area: 1/1;
+}
+
+.card__user-foto-perfil {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  object-position: 50% 50%;
+  background-color: white;
+}
+
+.menu {
+  background: linear-gradient(
+    to bottom,
+    white 0%,
+    white 83%,
+    #354f52 83%,
+    #354f52 100%
+  );
+  flex: 1;
+  grid-area: 1/2;
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn__menu,
+.btn__menu:active {
+  border: 0;
+  outline: none;
+  color: white;
+}
+
+i.bi.bi-lg {
+  font-size: 7em;
+  color: #1e1e1e;
+}
+
+.btn__menu:hover {
+  color: white;
+}
+
+.btn__menu:hover i.bi {
+  transform: scale(1.1);
+  transition: 0.1s;
+}
+
+.btn__menu.active {
+  background-color: #354f52;
+}
+
+.btn__menu.active,
+.btn__menu.active i.bi {
+  color: white;
+}

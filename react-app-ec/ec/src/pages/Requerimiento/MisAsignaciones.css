@@ -1,0 +1,24 @@
+.min-w-select {
+  min-width: 250px;
+}
+
+.bg-primary-color {
+  background-color: #354f52;
+}
+
+.table-primary-color {
+  --bs-table-bg: #354f52;
+  --bs-table-color-state: #fff;
+}
+
+.lista-botones li {
+  margin-bottom: 1em;
+  padding: 0.75em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lista-botones li:last-child {
+  margin-bottom: 0;
+}
