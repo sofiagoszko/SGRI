@@ -1,6 +1,7 @@
 package com.api.sgri.dto;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -18,6 +19,7 @@ public class RequerimientoDTO {
     private Long usuarioEmisor;
     private Long usuarioDestinatario;
     private List<ComentarioDTO> comentarios;
+    private List<String> archivosAdjuntos;
 
     public RequerimientoDTO(){
 
