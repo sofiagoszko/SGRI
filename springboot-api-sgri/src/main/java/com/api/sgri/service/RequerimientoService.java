@@ -1,6 +1,7 @@
 package com.api.sgri.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class RequerimientoService {
         //.orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
 
         // Crear el Requerimiento
-        Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario);
+        Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
         return requerimientoRepository.save(requerimiento);
     }
 

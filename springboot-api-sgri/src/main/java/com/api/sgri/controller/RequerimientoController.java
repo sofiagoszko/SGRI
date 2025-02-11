@@ -100,40 +100,43 @@ public class RequerimientoController {
             return ResponseEntity
                     .status(data.getStatusCode())
                     .body(data);
-        }catch (Exception e) {
+             }catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(400).body("Error: " + e.getMessage());
-        }
-    }
+             }
 
-    @PostMapping("/requerimientos/{id}/adjuntar")
-public ResponseEntity<Object> adjuntarArchivos(@PathVariable Long id, 
-                                              @RequestParam("archivos") List<MultipartFile> archivos) {
-    try {
-        if (archivos.size() > 5) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
-        }
 
-        Requerimiento requerimiento = requerimientoService.adjuntarArchivos(id, archivos);
+         }
 
-        // Convertir los archivos adjuntos a DTOs
-        List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = new ArrayList<>();
-        for (ArchivoAdjunto archivoAdjunto : requerimiento.getArchivosAdjuntos()) {
-            archivosAdjuntosDTO.add(new ArchivoAdjuntoDTO(archivoAdjunto.getNombre(), archivoAdjunto.getRuta()));
-        }
+         @PostMapping("/requerimientos/{id}/adjuntar")
+          public ResponseEntity<Object> adjuntarArchivos(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
+            try {
+                if (archivos.size() > 5) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
+               }
 
-        // Retornar solo los DTOs de los archivos
-        HttpBodyResponse data = new HttpBodyResponse.Builder()
+             Requerimiento requerimiento = requerimientoService.adjuntarArchivos(id, archivos);
+
+                // Convertir los archivos adjuntos a DTOs
+                List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = new ArrayList<>();
+                 for (ArchivoAdjunto archivoAdjunto : requerimiento.getArchivosAdjuntos()) {
+                 archivosAdjuntosDTO.add(new ArchivoAdjuntoDTO(archivoAdjunto.getNombre(), archivoAdjunto.getRuta()));
+                 }
+
+                    // Retornar solo los DTOs de los archivos
+                 HttpBodyResponse data = new HttpBodyResponse.Builder()
                 .message("Archivos adjuntados correctamente")
                 .status("Success")
                 .statusCode(200)
                 .data(archivosAdjuntosDTO)
                 .build();
 
-        return ResponseEntity.status(data.getStatusCode()).body(data);
+             return ResponseEntity.status(data.getStatusCode()).body(data);
 
-    } catch (Exception e) {
+         } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
+     }
     }
-}
+
+    
 }

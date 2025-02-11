@@ -1,24 +1,33 @@
 package com.api.sgri.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.api.sgri.dto.ArchivoComentarioDTO;
 import com.api.sgri.dto.ComentarioDTO;
-import com.api.sgri.dto.UsuarioEmpresaDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.ComentarioMapper;
-import com.api.sgri.mapper.UsuarioEmpresaMapper;
+import com.api.sgri.model.ArchivoComentario;
 import com.api.sgri.model.Comentario;
 import com.api.sgri.model.Requerimiento;
-import com.api.sgri.model.UsuarioEmpresa;
 import com.api.sgri.response.HttpBodyResponse;
 import com.api.sgri.response.ResponseFactory;
+import com.api.sgri.service.ArchivoComentarioService;
 import com.api.sgri.service.ComentarioService;
 import com.api.sgri.service.RequerimientoService;
-import com.api.sgri.service.UsuarioEmpresaService;
-import org.aspectj.weaver.ast.Not;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/requerimiento")
@@ -36,6 +45,12 @@ public class ComentarioController {
 
     @Autowired
     private ResponseFactory responseFactory;
+
+    @Autowired
+    private ArchivoComentarioService archivoComentarioService;
+
+
+
 
     @GetMapping("comentario/{id}")
     public ResponseEntity<Object> getComentario(@PathVariable Long id) throws NotFoundException {
@@ -126,6 +141,36 @@ public class ComentarioController {
             e.printStackTrace();
             return ResponseEntity.status(400).body("Error: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/comentarios/{id}/adjuntar")
+          public ResponseEntity<Object> adjuntarArchivoComentario(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
+            try {
+                if (archivos.size() > 5) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
+               }
+
+             Comentario comentario = comentarioService.adjuntarArchivoComentario(id, archivos);
+
+                // Convertir los archivos adjuntos a DTOs
+                List<ArchivoComentarioDTO> archivoComentarioDTO = new ArrayList<>();
+                 for (ArchivoComentario archivosComentario : comentario.getArchivosComentario()) {
+                 archivoComentarioDTO.add(new ArchivoComentarioDTO(archivosComentario.getNombre(), archivosComentario.getRuta()));
+                 }
+
+                    // Retornar solo los DTOs de los archivos
+                 HttpBodyResponse data = new HttpBodyResponse.Builder()
+                .message("Archivos adjuntados correctamente")
+                .status("Success")
+                .statusCode(200)
+                .data(archivoComentarioDTO)
+                .build();
+
+             return ResponseEntity.status(data.getStatusCode()).body(data);
+
+         } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
+     }
     }
 
 }

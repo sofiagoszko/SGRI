@@ -77,7 +77,7 @@ public class RequerimientoMapper {
         @Mapping(target = "archivosAdjuntos", expression = "java(mapArchivosAdjuntosDTO(dto.getArchivosAdjuntos()))")
     })
 
-    public Requerimiento fromDTO(RequerimientoDTO dto, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario) throws NotFoundException {
+    public Requerimiento fromDTO(RequerimientoDTO dto, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> Comentario) throws NotFoundException {
         Requerimiento requerimiento = new Requerimiento();
     
         // Mapear atributos básicos

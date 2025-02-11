@@ -1,8 +1,8 @@
 package com.api.sgri.dto;
+import java.util.List;
 
 import com.api.sgri.model.Requerimiento;
 
-import com.api.sgri.model.UsuarioEmpresa;
 import lombok.Data;
 
 @Data
@@ -14,6 +14,7 @@ public class ComentarioDTO {
     private String fecha_hora;
     private Long usuarioEmisorComentario;
     private Requerimiento requerimiento;
+    private List<String> archivosComentario;
 
     public ComentarioDTO(){
         

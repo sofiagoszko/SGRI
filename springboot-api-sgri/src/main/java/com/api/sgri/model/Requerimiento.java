@@ -64,8 +64,8 @@ public class Requerimiento {
     @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>(); 
 
-    public Requerimiento(){
-
+    public Requerimiento() {
+        // Constructor vacío necesario para instanciar sin argumentos
     }
 
     public Requerimiento(String estado, String prioridad, String fechaHora, String asunto, String descripcion, String codigo, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> comentarios) {

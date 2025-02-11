@@ -1,17 +1,21 @@
 package com.api.sgri.service;
 
-import com.api.sgri.dto.ComentarioDTO;
-import com.api.sgri.exception.ListFullException;
-import com.api.sgri.exception.NotFoundException;
-import com.api.sgri.mapper.ComentarioMapper;
-import com.api.sgri.model.Comentario;
-import com.api.sgri.model.Requerimiento;
-import com.api.sgri.model.UsuarioEmpresa;
-import com.api.sgri.repository.ComentarioRepository;
-import com.api.sgri.repository.UsuarioEmpresaRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.api.sgri.dto.ComentarioDTO;
+import com.api.sgri.exception.NotFoundException;
+import com.api.sgri.mapper.ComentarioMapper;
+import com.api.sgri.model.ArchivoComentario;
+import com.api.sgri.model.Comentario;
+import com.api.sgri.model.Requerimiento;
+import com.api.sgri.repository.ComentarioRepository;
+import com.api.sgri.repository.UsuarioEmpresaRepository;
 
 @Service
 public class ComentarioService {
@@ -21,7 +25,7 @@ public class ComentarioService {
     @Autowired
     private UsuarioEmpresaRepository usuarioEmpresaRepository;
     @Autowired
-    private RequerimientoService requerimientoService;
+    private ArchivoComentarioService archivoComentarioService;
 
     @Autowired
     private ComentarioMapper comentarioMapper;
@@ -67,6 +71,31 @@ public class ComentarioService {
             throw new NotFoundException("Comentario no encontrado con id " + id);
         }
         return comentario;
+    }
+
+     public Comentario adjuntarArchivoComentario(Long comentarioId, List<MultipartFile> archivos) throws IOException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        if (archivos.size() > 5) {
+            throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
+        }
+
+        if (comentario.getArchivosComentario() == null) {
+            comentario.setArchivosComentario(new ArrayList<>());
+        }
+
+        for (MultipartFile archivo : archivos) {
+            String rutaArchivo = archivoComentarioService.guardarArchivoComentario(archivo); 
+            ArchivoComentario archivoComentario = new ArchivoComentario();
+            archivoComentario.setNombre(archivo.getOriginalFilename());
+            archivoComentario.setRuta(rutaArchivo);
+            archivoComentario.setComentario(comentario);
+
+            comentario.getArchivosComentario().add(archivoComentario); 
+        }
+
+        return comentarioRepository.save(comentario);  
     }
 
 
