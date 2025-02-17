@@ -2,10 +2,8 @@ package com.api.sgri.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.api.sgri.dto.ComentarioDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.ArchivoAdjuntoMapper;
-import com.api.sgri.model.Comentario;
 import com.api.sgri.service.ArchivoAdjuntoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +159,47 @@ public class RequerimientoController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         }catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existen archivos adjuntos pora el requerimiento: " + id);
+            return responseFactory.errorNotFound("No existen archivos adjuntos para el requerimiento: " + id);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
+    @GetMapping("/requerimientos/{idRequerimiento}/archivos/{idArchivo}")
+    public ResponseEntity<Object> getArchivo(@PathVariable Long idRequerimiento, @PathVariable Long idArchivo) {
+        try{
+            ArchivoAdjunto archivoAdjunto = requerimientoService.getArchivoAdjuntoById(idRequerimiento, idArchivo);
+
+            ArchivoAdjuntoDTO archivoAdjuntoDTO = archivoAdjuntoMapper.toDTO(archivoAdjunto);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivo obtenido con éxito")
+                    .data(archivoAdjuntoDTO)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe archivo adjunto con el id: " + idArchivo);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
+    @DeleteMapping("/requerimientos/{idRequerimiento}/archivos/{idArchivo}")
+    public ResponseEntity<Object> deleteArchivo(@PathVariable Long idRequerimiento, @PathVariable Long idArchivo) {
+        try{
+            ArchivoAdjunto archivoAdjunto = requerimientoService.deleteArchivoComentarioById(idRequerimiento, idArchivo);
+
+            ArchivoAdjuntoDTO archivoAdjuntoDTO = archivoAdjuntoMapper.toDTO(archivoAdjunto);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivo eliminado con éxito")
+                    .data(archivoAdjuntoDTO)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe archivo adjunto con el id: " + idArchivo);
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }

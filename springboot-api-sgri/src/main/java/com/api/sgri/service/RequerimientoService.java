@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.api.sgri.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.api.sgri.dto.RequerimientoDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.RequerimientoMapper;
-import com.api.sgri.model.ArchivoAdjunto;
-import com.api.sgri.model.Requerimiento;
-import com.api.sgri.model.TipoRequerimiento;
-import com.api.sgri.model.UsuarioEmpresa;
 import com.api.sgri.repository.CategoriaTipoRepository;
 import com.api.sgri.repository.RequerimientoRepository;
 import com.api.sgri.repository.TipoRequerimientoRepository;
@@ -93,5 +90,19 @@ public class RequerimientoService {
 
         requerimientoRepository.save(requerimiento);
         return archivosCargados;
+    }
+
+    public ArchivoAdjunto getArchivoAdjuntoById(Long requerimientoId, Long archivoId) throws NotFoundException {
+        Requerimiento requerimiento = requerimientoRepository.findById(requerimientoId)
+                .orElseThrow(() -> new RuntimeException("Requerimiento no encontrado"));
+
+        return archivoAdjuntoService.getArchivoAdjuntoById(archivoId);
+    }
+
+    public ArchivoAdjunto deleteArchivoComentarioById(Long requerimientoId, Long archivoId) throws NotFoundException {
+        Requerimiento requerimiento = requerimientoRepository.findById(requerimientoId)
+                .orElseThrow(() -> new RuntimeException("Requerimiento no encontrado"));
+
+        return archivoAdjuntoService.deleteArchivoAdjuntoById(archivoId);
     }
 }
