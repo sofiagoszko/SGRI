@@ -71,7 +71,7 @@ public class RequerimientoService {
     }
 
 
-    public Requerimiento adjuntarArchivos(Long requerimientoId, List<MultipartFile> archivos) throws IOException {
+    public List<ArchivoAdjunto> adjuntarArchivos(Long requerimientoId, List<MultipartFile> archivos) throws IOException {
         Requerimiento requerimiento = requerimientoRepository.findById(requerimientoId)
                 .orElseThrow(() -> new RuntimeException("Requerimiento no encontrado"));
 
@@ -79,6 +79,7 @@ public class RequerimientoService {
             throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
         }
 
+        List<ArchivoAdjunto> archivosCargados = new ArrayList<>();
         for (MultipartFile archivo : archivos) {
             String rutaArchivo = archivoAdjuntoService.guardarArchivo(archivo);
             ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
@@ -86,9 +87,11 @@ public class RequerimientoService {
             archivoAdjunto.setRuta(rutaArchivo);
             archivoAdjunto.setRequerimiento(requerimiento);
 
+            archivosCargados.add(archivoAdjunto);
             requerimiento.getArchivosAdjuntos().add(archivoAdjunto);
         }
 
-        return requerimientoRepository.save(requerimiento);
+        requerimientoRepository.save(requerimiento);
+        return archivosCargados;
     }
 }

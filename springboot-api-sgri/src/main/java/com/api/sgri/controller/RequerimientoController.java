@@ -119,9 +119,14 @@ public class RequerimientoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
            }
 
-            Requerimiento requerimiento = requerimientoService.adjuntarArchivos(id, archivos);
+//            Requerimiento requerimiento = requerimientoService.adjuntarArchivos(id, archivos);
+//
+//            List<ArchivoAdjunto> archivosAdjuntos = requerimiento.getArchivosAdjuntos();
+//            List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = archivosAdjuntos.stream()
+//                    .map(archivoAdjuntoMapper::toDTO)
+//                    .toList();
 
-            List<ArchivoAdjunto> archivosAdjuntos = requerimiento.getArchivosAdjuntos();
+            List<ArchivoAdjunto> archivosAdjuntos = requerimientoService.adjuntarArchivos(id, archivos);
             List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = archivosAdjuntos.stream()
                     .map(archivoAdjuntoMapper::toDTO)
                     .toList();
@@ -150,7 +155,7 @@ public class RequerimientoController {
                     .toList();
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
-                    .message("Comentarios obtenido con éxito")
+                    .message("Archivos obtenidos con éxito")
                     .data(archivosAdjuntosDTO)
                     .build();
 

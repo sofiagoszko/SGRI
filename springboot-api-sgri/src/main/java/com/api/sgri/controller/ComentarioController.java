@@ -3,6 +3,8 @@ package com.api.sgri.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import com.api.sgri.mapper.ArchivoComentarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +51,8 @@ public class ComentarioController {
     @Autowired
     private ArchivoComentarioService archivoComentarioService;
 
-
+    @Autowired
+    private ArchivoComentarioMapper archivoComentarioMapper;
 
 
     @GetMapping("comentario/{id}")
@@ -144,33 +147,52 @@ public class ComentarioController {
     }
 
     @PostMapping("/comentarios/{id}/adjuntar")
-          public ResponseEntity<Object> adjuntarArchivoComentario(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
-            try {
-                if (archivos.size() > 5) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
-               }
+    public ResponseEntity<Object> adjuntarArchivoComentario(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
+        try {
+            if (archivos.size() > 5) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
+            }
 
-             Comentario comentario = comentarioService.adjuntarArchivoComentario(id, archivos);
+            List<ArchivoComentario> archivosComentario = comentarioService.adjuntarArchivoComentario(id, archivos);
 
-                // Convertir los archivos adjuntos a DTOs
-                List<ArchivoComentarioDTO> archivoComentarioDTO = new ArrayList<>();
-                 for (ArchivoComentario archivosComentario : comentario.getArchivosComentario()) {
-                 archivoComentarioDTO.add(new ArchivoComentarioDTO(archivosComentario.getNombre(), archivosComentario.getRuta()));
-                 }
+            List<ArchivoComentarioDTO> archivosComentarioDTO = archivosComentario.stream()
+                    .map(archivoComentarioMapper::toDTO)
+                    .toList();
 
-                    // Retornar solo los DTOs de los archivos
-                 HttpBodyResponse data = new HttpBodyResponse.Builder()
-                .message("Archivos adjuntados correctamente")
-                .status("Success")
-                .statusCode(200)
-                .data(archivoComentarioDTO)
-                .build();
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivo adjuntado correctamente")
+                    .status("Success")
+                    .statusCode(200)
+                    .data(archivosComentarioDTO)
+                    .build();
 
-             return ResponseEntity.status(data.getStatusCode()).body(data);
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
+        }
+    }
 
-         } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
-     }
+    @GetMapping("/comentarios/{id}/archivos")
+    public ResponseEntity<Object> getArchivos(@PathVariable Long id) {
+        try{
+            List<ArchivoComentario> archivoComentarios = archivoComentarioService.getArchivosAdjuntosByComentarioId(id);
+
+
+            List<ArchivoComentarioDTO> archivosComentarioDTO = archivoComentarios.stream()
+                    .map(archivoComentarioMapper::toDTO)
+                    .toList();
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivos obtenidos con éxito")
+                    .data(archivosComentarioDTO)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existen archivos adjuntos pora el comentario: " + id);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
     }
 
 }

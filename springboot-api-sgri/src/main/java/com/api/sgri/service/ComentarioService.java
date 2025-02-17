@@ -73,7 +73,7 @@ public class ComentarioService {
         return comentario;
     }
 
-     public Comentario adjuntarArchivoComentario(Long comentarioId, List<MultipartFile> archivos) throws IOException {
+     public List<ArchivoComentario> adjuntarArchivoComentario(Long comentarioId, List<MultipartFile> archivos) throws IOException {
         Comentario comentario = comentarioRepository.findById(comentarioId)
                 .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
 
@@ -85,6 +85,7 @@ public class ComentarioService {
             comentario.setArchivosComentario(new ArrayList<>());
         }
 
+        List<ArchivoComentario> archivosCargados = new ArrayList<>();
         for (MultipartFile archivo : archivos) {
             String rutaArchivo = archivoComentarioService.guardarArchivoComentario(archivo); 
             ArchivoComentario archivoComentario = new ArchivoComentario();
@@ -92,10 +93,12 @@ public class ComentarioService {
             archivoComentario.setRuta(rutaArchivo);
             archivoComentario.setComentario(comentario);
 
+            archivosCargados.add(archivoComentario);
             comentario.getArchivosComentario().add(archivoComentario); 
         }
 
-        return comentarioRepository.save(comentario);  
+        comentarioRepository.save(comentario);
+        return archivosCargados;
     }
 
 
