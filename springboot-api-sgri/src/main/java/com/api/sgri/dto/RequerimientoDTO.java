@@ -2,6 +2,8 @@ package com.api.sgri.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.api.sgri.model.ArchivoAdjunto;
+import com.api.sgri.model.Requerimiento;
 import lombok.Data;
 
 @Data
@@ -26,8 +28,8 @@ public class RequerimientoDTO {
     }
 
     public RequerimientoDTO(Long id, String estado, String prioridad, String fechaHora, String asunto, String descripcion,
-            String codigo, String categoriaTipo, Long tipoRequerimiento,
-            Long usuarioEmisor, Long usuarioDestinatario) {
+                            String codigo, String categoriaTipo, Long tipoRequerimiento,
+                            Long usuarioEmisor, Long usuarioDestinatario, List<String> archivosAdjuntos) {
         this.id = id;
         this.estado = estado;
         this.prioridad = prioridad;
@@ -39,6 +41,7 @@ public class RequerimientoDTO {
         this.tipoRequerimiento = tipoRequerimiento;
         this.usuarioEmisor = usuarioEmisor;
         this.usuarioDestinatario = usuarioDestinatario;
+        this.archivosAdjuntos = (archivosAdjuntos != null) ? archivosAdjuntos : new ArrayList<>();
         this.comentarios = new ArrayList<>();
     }
 

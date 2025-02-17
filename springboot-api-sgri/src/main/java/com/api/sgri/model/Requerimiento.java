@@ -65,10 +65,9 @@ public class Requerimiento {
     private List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>(); 
 
     public Requerimiento() {
-        // Constructor vacío necesario para instanciar sin argumentos
     }
 
-    public Requerimiento(String estado, String prioridad, String fechaHora, String asunto, String descripcion, String codigo, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> comentarios) {
+    public Requerimiento(String estado, String prioridad, String fechaHora, String asunto, String descripcion, String codigo, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<ArchivoAdjunto> archivosAdjuntos, List<Comentario> comentarios) {
         this.estado = estado;
         this.prioridad = prioridad;
         this.fechaHora = fechaHora;
@@ -78,6 +77,7 @@ public class Requerimiento {
         this.tipoRequerimiento = tipoRequerimiento;
         this.usuarioEmisor = usuarioEmisor;
         this.usuarioDestinatario = usuarioDestinatario;
+        this.archivosAdjuntos = (archivosAdjuntos != null) ? archivosAdjuntos : new ArrayList<>();
         this.comentarios = (comentarios != null) ? comentarios : new ArrayList<>();
     }
 

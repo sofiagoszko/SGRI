@@ -51,14 +51,9 @@ public class RequerimientoService {
 
         UsuarioEmpresa usuarioEmisor = usuarioEmpresaRepository.findById(dto.getUsuarioEmisor())
                 .orElseThrow(() -> new NotFoundException("Usuario Emisor no encontrado"));
-        // Validar existencia de usuario destinatario (opcional)
+
         UsuarioEmpresa usuarioDestinatario = dto.getUsuarioDestinatario() != null ? usuarioEmpresaRepository.findById(dto.getUsuarioDestinatario()).orElse(null) : null;
 
-        // Validar existencia de la categoria
-        //CategoriaTipo categoria = categoriaTipoRepository.findById(dto.getCategoriaTipo().getId())
-        //.orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
-
-        // Crear el Requerimiento
         Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
         return requerimientoRepository.save(requerimiento);
     }
@@ -85,15 +80,15 @@ public class RequerimientoService {
         }
 
         for (MultipartFile archivo : archivos) {
-            String rutaArchivo = archivoAdjuntoService.guardarArchivo(archivo); // Guardamos el archivo
+            String rutaArchivo = archivoAdjuntoService.guardarArchivo(archivo);
             ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
             archivoAdjunto.setNombre(archivo.getOriginalFilename());
             archivoAdjunto.setRuta(rutaArchivo);
             archivoAdjunto.setRequerimiento(requerimiento);
 
-            requerimiento.getArchivosAdjuntos().add(archivoAdjunto); // Asociamos el archivo al requerimiento
+            requerimiento.getArchivosAdjuntos().add(archivoAdjunto);
         }
 
-        return requerimientoRepository.save(requerimiento);  // Guardamos el requerimiento con los archivos adjuntos
+        return requerimientoRepository.save(requerimiento);
     }
 }

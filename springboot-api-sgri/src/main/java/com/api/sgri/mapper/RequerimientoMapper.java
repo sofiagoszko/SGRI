@@ -50,7 +50,6 @@ public class RequerimientoMapper {
         dto.setPrioridad(requerimiento.getPrioridad());
         dto.setCategoriaTipo(requerimiento.getCategoria());
 
-        // Mapear relaciones
         dto.setTipoRequerimiento(requerimiento.getTipoRequerimiento().getId());
         dto.setUsuarioEmisor(requerimiento.getUsuarioEmisor().getId());
         dto.setUsuarioDestinatario(requerimiento.getUsuarioDestinatario() != null ? requerimiento.getUsuarioDestinatario().getId() : null);
@@ -109,19 +108,18 @@ public class RequerimientoMapper {
         }
 
         if (dto.getArchivosAdjuntos() != null) {
-        List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>();
-        for (String archivoNombre : dto.getArchivosAdjuntos()) {
-            ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
-            archivoAdjunto.setRuta(archivoNombre); 
-            archivoAdjunto.setRequerimiento(requerimiento);
-            archivosAdjuntos.add(archivoAdjunto);
+            List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>();
+            for (String archivoNombre : dto.getArchivosAdjuntos()) {
+                ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
+                archivoAdjunto.setRuta(archivoNombre);
+                archivoAdjunto.setRequerimiento(requerimiento);
+                archivosAdjuntos.add(archivoAdjunto);
+            }
+            requerimiento.setArchivosAdjuntos(archivosAdjuntos);
         }
-        requerimiento.setArchivosAdjuntos(archivosAdjuntos);
-    }
         return requerimiento;
     }
 
-    // Método para mapear archivos adjuntos desde la entidad Requerimiento a DTO
     private List<String> mapArchivosAdjuntos(List<ArchivoAdjunto> archivosAdjuntos) {
         if (archivosAdjuntos == null) {
             return new ArrayList<>();
@@ -131,7 +129,6 @@ public class RequerimientoMapper {
             .collect(Collectors.toList());
     }
 
-    // Método para mapear archivos adjuntos desde el DTO a la entidad Requerimiento
     private List<ArchivoAdjunto> mapArchivosAdjuntosDTO(List<String> archivosAdjuntosDTO) {
         if (archivosAdjuntosDTO == null) {
             return new ArrayList<>();
