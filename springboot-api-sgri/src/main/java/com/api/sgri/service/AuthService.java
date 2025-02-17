@@ -34,7 +34,7 @@ public class AuthService {
             throw new UnauthorizedException("Credenciales inválidas");
         }
     
-        // Generar el token JWT
+
         String token = JwtToken
                 .generateToken()
                 .addClaim("userName", usuarioEmpresa.getUserName())

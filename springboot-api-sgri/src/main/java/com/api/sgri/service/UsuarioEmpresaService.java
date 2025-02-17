@@ -37,9 +37,7 @@ public class UsuarioEmpresaService {
         }
 
         //UsuarioEmpresa usuarioEmpresa = usuarioEmpresaMapper.fromDTO(usuarioEmpresaDTO);
-        //2. crear el usuario con sus datos 
 
-        //hashea la contraseña
         String hashedPassword = passwordEncoder.encode(usuarioEmpresaDTO.getPassword());
 
             UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa(
@@ -54,7 +52,6 @@ public class UsuarioEmpresaService {
             usuarioEmpresaDTO.getDepartamento()
         );
 
-        //3. invocar al repositorio para guardar en base de datos al usuario
         usuarioEmpresaRepository.save(usuarioEmpresa);
         return usuarioEmpresa;
     }

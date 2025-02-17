@@ -45,11 +45,10 @@ public class TipoRequerimientoService {
     }
 
     public TipoRequerimiento deleteTipoRequerimiento(Long id) throws NotFoundException {
-        // Buscar al tipo por ID
+
         TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No existe usuario con id: " + id));
-        
-        // Eliminar al usuario
+
         tipoRequerimientoRepository.delete(tipoRequerimiento);
         
         return tipoRequerimiento; // Retornar el tipo eliminado 

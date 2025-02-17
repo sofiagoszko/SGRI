@@ -19,12 +19,12 @@ public class CategoriaTipoService {
     @Autowired
     private TipoRequerimientoRepository tipoRequerimientoRepository;
 
-    // Obtener todas las categorías
+
     public List<CategoriaTipo> obtenerCategorias() {
         return categoriaTipoRepository.findAll();
     }
 
-    // Obtener categorías de un tipo de requerimiento específico
+
     public List<CategoriaTipo> obtenerCategoriasPorTipo(Long tipoId) {
         return categoriaTipoRepository.findAll()
                 .stream()
@@ -32,7 +32,7 @@ public class CategoriaTipoService {
                 .toList();
     }
 
-    // Crear una nueva categoría
+
     public CategoriaTipo crearCategoria(String descripcion, Long tipoRequerimientoId) {
         Optional<TipoRequerimiento> tipoRequerimiento = tipoRequerimientoRepository.findById(tipoRequerimientoId);
 
