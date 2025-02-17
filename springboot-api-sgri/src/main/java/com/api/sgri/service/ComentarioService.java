@@ -101,5 +101,19 @@ public class ComentarioService {
         return archivosCargados;
     }
 
+    public ArchivoComentario getArchivoComentarioById(Long comentarioId, Long archivoId) throws NotFoundException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        ArchivoComentario archivoComentario = archivoComentarioService.getArchivoComentarioById(archivoId);
+        return archivoComentario;
+    }
+
+    public ArchivoComentario deleteArchivoComentarioById(Long comentarioId, Long archivoId) throws NotFoundException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        return archivoComentarioService.deleteArchivoComentarioById(archivoId);
+    }
 
 }

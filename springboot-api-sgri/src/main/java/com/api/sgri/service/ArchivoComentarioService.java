@@ -46,5 +46,22 @@ public class ArchivoComentarioService {
         }
         return archivosComentario;
     }
+
+    public ArchivoComentario getArchivoComentarioById(Long id) throws NotFoundException {
+        ArchivoComentario archivoComentario = archivoComentarioRepository.findById(id).orElse(null);
+        if(archivoComentario == null){
+            throw new NotFoundException("Archivo no encontrado con id " + id);
+        }
+        return archivoComentario;
+    }
+
+    public ArchivoComentario deleteArchivoComentarioById(Long id) throws NotFoundException {
+        ArchivoComentario archivoComentario = archivoComentarioRepository.findById(id).orElse(null);
+        if(archivoComentario == null){
+            throw new NotFoundException("Archivo no encontrado con id " + id);
+        }
+        archivoComentarioRepository.delete(archivoComentario);
+        return archivoComentario;
+    }
     
 }

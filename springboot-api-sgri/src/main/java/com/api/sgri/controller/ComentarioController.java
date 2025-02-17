@@ -8,14 +8,7 @@ import com.api.sgri.mapper.ArchivoComentarioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.api.sgri.dto.ArchivoComentarioDTO;
@@ -190,6 +183,47 @@ public class ComentarioController {
             return ResponseEntity.status(data.getStatusCode()).body(data);
         }catch (NotFoundException e) {
             return responseFactory.errorNotFound("No existen archivos adjuntos pora el comentario: " + id);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
+    @GetMapping("/comentarios/{idComentario}/archivos/{idArchivo}")
+    public ResponseEntity<Object> getArchivo(@PathVariable Long idComentario, @PathVariable Long idArchivo) {
+        try {
+            //ArchivoComentario archivoComentario = archivoComentarioService.getArchivoComentarioById(idComentario);
+            ArchivoComentario archivoComentario = comentarioService.getArchivoComentarioById(idComentario, idArchivo);
+
+            ArchivoComentarioDTO archivoComentarioDTO = archivoComentarioMapper.toDTO(archivoComentario);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivo obtenido con éxito")
+                    .data(archivoComentarioDTO)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe el archivo adjunto con el id  " + idArchivo);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
+    @DeleteMapping("/comentarios/{idComentario}/archivos/{idArchivo}")
+    public ResponseEntity<Object> deleteArchivo(@PathVariable Long idComentario, @PathVariable Long idArchivo) {
+        try {
+            ArchivoComentario archivoComentario = comentarioService.deleteArchivoComentarioById(idComentario, idArchivo);
+
+            ArchivoComentarioDTO archivoComentarioDTO = archivoComentarioMapper.toDTO(archivoComentario);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Archivo eliminado con éxito")
+                    .data(archivoComentarioDTO)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe el archivo adjunto con el id  " + idArchivo);
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }

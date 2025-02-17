@@ -43,5 +43,22 @@ public class ArchivoAdjuntoService {
         return archivosAdjuntos;
     }
 
+    public ArchivoAdjunto getArchivoAdjuntoById(Long id) throws NotFoundException {
+        ArchivoAdjunto archivoAdjunto = archivoAdjuntoRepository.findById(id).orElse(null);
+        if(archivoAdjunto == null){
+            throw new NotFoundException("Archivo no encontrado con id " + id);
+        }
+        return archivoAdjunto;
+    }
+
+    public ArchivoAdjunto deleteArchivoAdjuntoById(Long id) throws NotFoundException {
+        ArchivoAdjunto archivoAdjunto = archivoAdjuntoRepository.findById(id).orElse(null);
+        if(archivoAdjunto == null){
+            throw new NotFoundException("Archivo no encontrado con id " + id);
+        }
+        archivoAdjuntoRepository.delete(archivoAdjunto);
+        return archivoAdjunto;
+    }
+
 
 }
