@@ -44,6 +44,15 @@ public class ArchivoAdjuntoService {
 
     public String guardarArchivo(MultipartFile archivo) throws IOException {
 
+        String contentType = archivo.getContentType();
+        if (!("application/pdf".equals(contentType)
+                || "application/msword".equals(contentType)
+                || "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType)
+                || "application/vnd.ms-excel".equals(contentType)
+                || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(contentType))) {
+            throw new IllegalArgumentException("Formato de archivo no permitido. Solo se permiten archivos Word, Excel o PDF.");
+        }
+
         Path rutaDirectorio = Paths.get(directorioArchivos);
         if (!Files.exists(rutaDirectorio)) {
             Files.createDirectories(rutaDirectorio);

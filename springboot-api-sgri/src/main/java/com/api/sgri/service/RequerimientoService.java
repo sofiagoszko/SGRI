@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.api.sgri.exception.BadRequestException;
 import com.api.sgri.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +58,7 @@ public class RequerimientoService {
 //        return requerimientoRepository.save(requerimiento);
 //    }
 
-    public Requerimiento crearRequerimiento(RequerimientoDTO dto, List<MultipartFile> archivos) throws NotFoundException, IOException {
+    public Requerimiento crearRequerimiento(RequerimientoDTO dto, List<MultipartFile> archivos) throws NotFoundException, IOException, RuntimeException {
 
         TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(dto.getTipoRequerimiento())
                 .orElseThrow(() -> new NotFoundException("Tipo de Requerimiento no encontrado"));
@@ -69,7 +72,7 @@ public class RequerimientoService {
 
         Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
 
-        if (archivos != null && !archivos.isEmpty()) {
+        if (archivos != null && !archivos.isEmpty() && archivos.size()<=5) {
             List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>();
             for (MultipartFile archivo : archivos) {
                 String rutaArchivo = archivoAdjuntoService.guardarArchivo(archivo);
@@ -80,6 +83,8 @@ public class RequerimientoService {
                 archivosAdjuntos.add(archivoAdjunto);
             }
             requerimiento.setArchivosAdjuntos(archivosAdjuntos);
+        }else if (archivos.size()>5) {
+            throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
         }
 
         return requerimientoRepository.save(requerimiento);

@@ -203,6 +203,9 @@ public class RequerimientoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
            }
 
+            if(archivoAdjuntoService.getArchivosAdjuntosByRequerimientoId(id).size()>=5){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Se ha llegado al limite de archivos adjuntos.");
+            }
             List<ArchivoAdjunto> archivosAdjuntos = requerimientoService.adjuntarArchivos(id, archivos);
             List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = archivosAdjuntos.stream()
                     .map(archivoAdjuntoMapper::toDTO)
