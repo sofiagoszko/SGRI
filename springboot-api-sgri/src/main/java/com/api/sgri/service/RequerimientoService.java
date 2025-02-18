@@ -67,6 +67,33 @@ public class RequerimientoService {
         return requerimiento;
     }
 
+    public RequerimientoDTO updateRequerimiento(Requerimiento requerimiento, RequerimientoDTO requerimientoDTO) throws NotFoundException {
+        requerimiento.setAsunto(requerimientoDTO.getAsunto());
+        requerimiento.setDescripcion(requerimientoDTO.getDescripcion());
+        requerimiento.setEstado(requerimientoDTO.getEstado());
+        requerimiento.setFechaHora(requerimientoDTO.getFechaHora());
+        requerimiento.setPrioridad(requerimientoDTO.getPrioridad());
+        requerimiento.setCategoria(requerimientoDTO.getCategoriaTipo());
+
+        TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(requerimientoDTO.getTipoRequerimiento())
+                .orElseThrow(() -> new NotFoundException("Tipo de Requerimiento no encontrado"));
+        requerimiento.setTipoRequerimiento(tipoRequerimiento);
+
+        UsuarioEmpresa usuarioEmisor = usuarioEmpresaRepository.findById(requerimientoDTO.getUsuarioEmisor())
+                .orElseThrow(() -> new NotFoundException("Usuario Emisor no encontrado"));
+        requerimiento.setUsuarioEmisor(usuarioEmisor);
+
+        UsuarioEmpresa usuarioDestinatario = requerimientoDTO.getUsuarioDestinatario() != null ? usuarioEmpresaRepository.findById(requerimientoDTO.getUsuarioDestinatario()).orElse(null) : null;
+        requerimiento.setUsuarioDestinatario(usuarioDestinatario);
+
+        if (requerimientoDTO.getCodigo() != null) {
+            requerimiento.setCodigo(requerimientoDTO.getCodigo());
+        }
+
+        requerimiento = requerimientoRepository.save(requerimiento);
+        return requerimientoMapper.toDTO(requerimiento);
+    }
+
 
     public List<ArchivoAdjunto> adjuntarArchivos(Long requerimientoId, List<MultipartFile> archivos) throws IOException {
         Requerimiento requerimiento = requerimientoRepository.findById(requerimientoId)

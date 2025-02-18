@@ -85,6 +85,29 @@ public class RequerimientoController {
         }
     }
 
+    @PutMapping("/requerimientos/{id}")
+    public ResponseEntity<Object> updateRequerimiento(@PathVariable Long id, @RequestBody RequerimientoDTO requerimientoDTO) {
+        try {
+            Requerimiento requerimiento = requerimientoService.obtenerRequerimientoPorId(id);
+
+
+            RequerimientoDTO requerimientoActualizado = requerimientoService.updateRequerimiento(requerimiento, requerimientoDTO);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Requerimiento actualizado con éxito")
+                    .status("Success")
+                    .statusCode(200)
+                    .data(requerimientoActualizado)
+                    .build();
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+
+        } catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe requerimiento con id: " + id);
+        }catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
     @PostMapping("/nuevo")
     public ResponseEntity<Object> createRequerimiento(@RequestBody RequerimientoDTO requerimientoDTO) {
         try {
