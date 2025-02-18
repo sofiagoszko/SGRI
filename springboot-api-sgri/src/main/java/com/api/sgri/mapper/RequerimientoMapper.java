@@ -62,10 +62,17 @@ public class RequerimientoMapper {
             requerimiento.setComentarios(new ArrayList<>());
         }
 
+//        if (requerimiento.getArchivosAdjuntos() != null) {
+//            List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
+//                .map(archivoAdjunto -> archivoAdjunto.getRuta())
+//                .collect(Collectors.toList());
+//            dto.setArchivosAdjuntos(archivosAdjuntos);
+//        }
+
         if (requerimiento.getArchivosAdjuntos() != null) {
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                .map(archivoAdjunto -> archivoAdjunto.getRuta())
-                .collect(Collectors.toList());
+                    .map(archivoAdjunto -> "http://localhost:8080/api/requerimiento/archivoAdjunto/" + archivoAdjunto.getNombre())
+                    .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }
 

@@ -2,12 +2,23 @@ package com.api.sgri.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+
+
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.ArchivoAdjuntoMapper;
 import com.api.sgri.service.ArchivoAdjuntoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,11 +119,36 @@ public class RequerimientoController {
         }
     }
 
-    @PostMapping("/nuevo")
-    public ResponseEntity<Object> createRequerimiento(@RequestBody RequerimientoDTO requerimientoDTO) {
-        try {
+//    @PostMapping("/nuevo")
+//    public ResponseEntity<Object> createRequerimiento(@RequestBody RequerimientoDTO requerimientoDTO) {
+//        try {
+//
+//            Requerimiento requerimiento = requerimientoService.crearRequerimiento(requerimientoDTO);
+//
+//            RequerimientoDTO requerimientoDTORespuesta = requerimientoMapper.toDTO(requerimiento);
+//
+//            HttpBodyResponse data = new HttpBodyResponse.Builder()
+//                    .message("Se ha creado el requerimiento")
+//                    .status("Success")
+//                    .statusCode(201)
+//                    .data(requerimientoDTORespuesta)
+//                    .build();
+//
+//            return ResponseEntity
+//                    .status(data.getStatusCode())
+//                    .body(data);
+//             }catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(400).body("Error: " + e.getMessage());
+//             }
+//    }
 
-            Requerimiento requerimiento = requerimientoService.crearRequerimiento(requerimientoDTO);
+    @PostMapping(value = "/nuevo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> createRequerimiento(
+            @RequestPart("datos") RequerimientoDTO requerimientoDTO,
+            @RequestPart(value = "archivos", required = false) List<MultipartFile> archivos) {
+        try {
+            Requerimiento requerimiento = requerimientoService.crearRequerimiento(requerimientoDTO, archivos);
 
             RequerimientoDTO requerimientoDTORespuesta = requerimientoMapper.toDTO(requerimiento);
 
@@ -123,15 +159,42 @@ public class RequerimientoController {
                     .data(requerimientoDTORespuesta)
                     .build();
 
-            return ResponseEntity
-                    .status(data.getStatusCode())
-                    .body(data);
-             }catch (Exception e) {
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(400).body("Error: " + e.getMessage());
-             }
+        }
     }
 
+    @GetMapping("/archivoAdjunto/{nombreArchivo}")
+    public ResponseEntity<Resource> mostrarArchivo(@PathVariable String nombreArchivo) throws IOException, NotFoundException {
+
+        ArchivoAdjunto archivoAdjunto = archivoAdjuntoService.findByNombre(nombreArchivo);
+
+        if (archivoAdjunto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Path rutaArchivo = Paths.get(archivoAdjuntoService.getDirectorioArchivos())
+                .resolve(archivoAdjunto.getRuta())
+                .normalize();
+
+        Resource recurso = new UrlResource(rutaArchivo.toUri());
+
+        if (!recurso.exists() || !recurso.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String contentType = Files.probeContentType(rutaArchivo);
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nombreArchivo + "\"")
+                .body(recurso);
+    }
 
     @PostMapping("/requerimientos/{id}/adjuntar")
       public ResponseEntity<Object> adjuntarArchivos(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
@@ -139,13 +202,6 @@ public class RequerimientoController {
             if (archivos.size() > 5) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
            }
-
-//            Requerimiento requerimiento = requerimientoService.adjuntarArchivos(id, archivos);
-//
-//            List<ArchivoAdjunto> archivosAdjuntos = requerimiento.getArchivosAdjuntos();
-//            List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = archivosAdjuntos.stream()
-//                    .map(archivoAdjuntoMapper::toDTO)
-//                    .toList();
 
             List<ArchivoAdjunto> archivosAdjuntos = requerimientoService.adjuntarArchivos(id, archivos);
             List<ArchivoAdjuntoDTO> archivosAdjuntosDTO = archivosAdjuntos.stream()

@@ -41,7 +41,21 @@ public class RequerimientoService {
     @Autowired
     private ArchivoAdjuntoService archivoAdjuntoService;
 
-    public Requerimiento crearRequerimiento(RequerimientoDTO dto) throws NotFoundException {
+//    public Requerimiento crearRequerimiento(RequerimientoDTO dto) throws NotFoundException {
+//
+//        TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(dto.getTipoRequerimiento())
+//                .orElseThrow(() -> new NotFoundException("Tipo de Requerimiento no encontrado"));
+//
+//        UsuarioEmpresa usuarioEmisor = usuarioEmpresaRepository.findById(dto.getUsuarioEmisor())
+//                .orElseThrow(() -> new NotFoundException("Usuario Emisor no encontrado"));
+//
+//        UsuarioEmpresa usuarioDestinatario = dto.getUsuarioDestinatario() != null ? usuarioEmpresaRepository.findById(dto.getUsuarioDestinatario()).orElse(null) : null;
+//
+//        Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
+//        return requerimientoRepository.save(requerimiento);
+//    }
+
+    public Requerimiento crearRequerimiento(RequerimientoDTO dto, List<MultipartFile> archivos) throws NotFoundException, IOException {
 
         TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(dto.getTipoRequerimiento())
                 .orElseThrow(() -> new NotFoundException("Tipo de Requerimiento no encontrado"));
@@ -49,9 +63,25 @@ public class RequerimientoService {
         UsuarioEmpresa usuarioEmisor = usuarioEmpresaRepository.findById(dto.getUsuarioEmisor())
                 .orElseThrow(() -> new NotFoundException("Usuario Emisor no encontrado"));
 
-        UsuarioEmpresa usuarioDestinatario = dto.getUsuarioDestinatario() != null ? usuarioEmpresaRepository.findById(dto.getUsuarioDestinatario()).orElse(null) : null;
+        UsuarioEmpresa usuarioDestinatario = (dto.getUsuarioDestinatario() != null)
+                ? usuarioEmpresaRepository.findById(dto.getUsuarioDestinatario()).orElse(null)
+                : null;
 
         Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
+
+        if (archivos != null && !archivos.isEmpty()) {
+            List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>();
+            for (MultipartFile archivo : archivos) {
+                String rutaArchivo = archivoAdjuntoService.guardarArchivo(archivo);
+                ArchivoAdjunto archivoAdjunto = new ArchivoAdjunto();
+                archivoAdjunto.setNombre(archivo.getOriginalFilename());
+                archivoAdjunto.setRuta(rutaArchivo);
+                archivoAdjunto.setRequerimiento(requerimiento);
+                archivosAdjuntos.add(archivoAdjunto);
+            }
+            requerimiento.setArchivosAdjuntos(archivosAdjuntos);
+        }
+
         return requerimientoRepository.save(requerimiento);
     }
 
