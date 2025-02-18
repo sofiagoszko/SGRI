@@ -5,14 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.api.sgri.dto.AuthDTO;
 import com.api.sgri.dto.UsuarioEmpresaDTO;
@@ -25,7 +18,6 @@ import com.api.sgri.response.HttpBodyResponse;
 import com.api.sgri.response.ResponseFactory;
 import com.api.sgri.service.AuthService;
 import com.api.sgri.service.UsuarioEmpresaService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("api/usuario-empresa")
@@ -139,6 +131,28 @@ public class UsuarioEmpresaController {
             return ResponseEntity
                     .status(400)
                     .body("Ha ocurrido un error");
+        }
+    }
+
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioEmpresaDTO usuario) {
+        try {
+            UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.getUsuarioEmpresaByIdEntity(id);
+
+            UsuarioEmpresaDTO usuarioActualizado = usuarioEmpresaService.updateUsuarioEmpresa(usuarioEmpresa, usuario);
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Usuario actualizado con éxito")
+                    .data(usuarioActualizado)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        }catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe usuario con id: " + id);
+        } catch (DuplicateUserException e) {
+            return responseFactory.duplicateUserError();
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
         }
     }
 

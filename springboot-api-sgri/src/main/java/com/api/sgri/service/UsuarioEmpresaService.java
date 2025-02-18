@@ -56,6 +56,37 @@ public class UsuarioEmpresaService {
         return usuarioEmpresa;
     }
 
+    public UsuarioEmpresa getUsuarioEmpresaByIdEntity(Long id) throws NotFoundException {
+        return usuarioEmpresaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+    }
+
+    public UsuarioEmpresaDTO updateUsuarioEmpresa(UsuarioEmpresa usuarioEmpresa, UsuarioEmpresaDTO usuarioEmpresaDTO) throws Exception {
+        Boolean existUsuarioEmpresaWithSameEmail = usuarioEmpresaRepository.existsByEmail(usuarioEmpresaDTO.getEmail())
+                && !usuarioEmpresa.getEmail().equals(usuarioEmpresaDTO.getEmail());
+        Boolean existUsuarioEmpresaWithSameUserName = usuarioEmpresaRepository.existsByUserName(usuarioEmpresaDTO.getUserName())
+                && !usuarioEmpresa.getUserName().equals(usuarioEmpresaDTO.getUserName());
+        Boolean existUsuarioEmpresaWithSameLegajo = usuarioEmpresaRepository.existsByLegajo(usuarioEmpresaDTO.getLegajo())
+                && usuarioEmpresa.getLegajo() != usuarioEmpresaDTO.getLegajo();
+
+        if (existUsuarioEmpresaWithSameEmail || existUsuarioEmpresaWithSameUserName || existUsuarioEmpresaWithSameLegajo) {
+            throw new DuplicateUserException("Nombre de usuario, email o legajo duplicado");
+        }
+        usuarioEmpresa.setNombre(usuarioEmpresaDTO.getNombre());
+        usuarioEmpresa.setApellido(usuarioEmpresaDTO.getApellido());
+        usuarioEmpresa.setEmail(usuarioEmpresaDTO.getEmail());
+        usuarioEmpresa.setUserName(usuarioEmpresaDTO.getUserName());
+        usuarioEmpresa.setLegajo(usuarioEmpresaDTO.getLegajo());
+        usuarioEmpresa.setCargo(usuarioEmpresaDTO.getCargo());
+        usuarioEmpresa.setDepartamento(usuarioEmpresaDTO.getDepartamento());
+
+        if (usuarioEmpresaDTO.getPassword() != null && !usuarioEmpresaDTO.getPassword().isEmpty()) {
+            usuarioEmpresa.setPassword(passwordEncoder.encode(usuarioEmpresaDTO.getPassword()));
+        }
+
+        usuarioEmpresaRepository.save(usuarioEmpresa);
+        return usuarioEmpresaMapper.toDTO(usuarioEmpresa);
+    }
 
     public List<UsuarioEmpresaDTO> getUsuarioEmpresas() {
         return usuarioEmpresaRepository.findAll().stream()
