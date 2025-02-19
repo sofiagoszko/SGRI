@@ -1,7 +1,7 @@
 ﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import getBaseUrl from "../utils/getBaseUrl";
+import getBaseUrl from "../utils/getBaseUrl.js";
 
 function Login() {
   // Estado para los campos del formulario y el error
@@ -11,42 +11,44 @@ function Login() {
   const [alertType, setAlertType] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
-  const endpoint = getBaseUrl();
 
-  const AUTH_ENDPOINT = "api/usuario-empresa/credenciales"; // Constante para la URL de autenticación
+
+  const AUTH_ENDPOINT = `${getBaseUrl()}/api/usuario-empresa/credenciales`; // Constante para la URL de autenticación
 
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowAlert(false);
-    navigate("/home");
-    // try {
-    //     const response = await fetch(`${endpoint}${AUTH_ENDPOINT}`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             email: usuario,
-    //             password: password,
-    //         }),
-    //     });
+    // navigate("/home");
+    try {
+      console.log(AUTH_ENDPOINT)
+        const response = await fetch(AUTH_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userName: usuario,
+                password: password,
+            }),
+        });
 
-    //     if (response.ok) {
-    //         const data = await response.json();
-    //         const authToken = data.data;
-    //         localStorage.setItem('authToken', authToken);
-    //         navigate('/home'); // Redirige a home
-    //     } else {
-    //         setAlertMessage('Email o contraseña invalidos')
-    //         setAlertType('warning')
-    //         setShowAlert(true); // Muestra un mensaje de error más descriptivo
-    //     }
-    // } catch (error) {
-    //     setAlertMessage('Email o contraseña invalidos')
-    //     setAlertType('warning')
-    //     setShowAlert(true);// Muestra un error en caso de fallo del servidor
-    // }
+        if (response.ok) {
+            const data = await response.json();
+            const authToken = data.data;
+            localStorage.setItem('authToken', authToken);
+            navigate('/home'); // Redirige a home
+        } else {
+            setAlertMessage('Email o contraseña invalidos')
+            setAlertType('warning')
+            setShowAlert(true); // Muestra un mensaje de error más descriptivo
+        }
+    } catch (error) {
+      console.error("Error en la autenticación:", error.message);  
+      setAlertMessage('Email o contraseña invalidos')
+        setAlertType('warning')
+        setShowAlert(true);// Muestra un error en caso de fallo del servidor
+    }
   };
 
   return (
@@ -62,6 +64,8 @@ function Login() {
               type="text"
               className="form-control rounded-3"
               id="usuario"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
               required
             />
           </div>
@@ -73,6 +77,8 @@ function Login() {
               type="password"
               className="form-control rounded-3"
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

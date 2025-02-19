@@ -8,7 +8,7 @@ import NuevoRequerimiento from "./pages/Requerimiento/Nuevo";
 import MisAsignaciones from "./pages/Requerimiento/MisAsignaciones";
 import MisSolicitudes from "./pages/Requerimiento/MisSolicitudes";
 import Solicitudes from "./pages/Requerimiento/Solicitudes";
-import { AuthProvider } from "./utils/AuthContext";
+import { AuthProvider } from "./utils/AuthContext.jsx";
 function App() {
   return (
     <AuthProvider>
