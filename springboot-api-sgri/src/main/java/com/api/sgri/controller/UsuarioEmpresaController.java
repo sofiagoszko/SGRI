@@ -1,11 +1,22 @@
 package com.api.sgri.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.api.sgri.dto.AuthDTO;
 import com.api.sgri.dto.UsuarioEmpresaDTO;
@@ -13,6 +24,7 @@ import com.api.sgri.exception.BadRequestException;
 import com.api.sgri.exception.DuplicateUserException;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.exception.UnauthorizedException;
+import com.api.sgri.mapper.UsuarioEmpresaMapper;
 import com.api.sgri.model.UsuarioEmpresa;
 import com.api.sgri.response.HttpBodyResponse;
 import com.api.sgri.response.ResponseFactory;
@@ -32,6 +44,10 @@ public class UsuarioEmpresaController {
 
     @Autowired
     private UsuarioEmpresaService usuarioEmpresaService;
+
+    @Autowired
+    private UsuarioEmpresaMapper usuarioEmpresaMapper;
+
 
     @GetMapping("/")
     public ResponseEntity<Object> publicRoute() {
@@ -172,6 +188,31 @@ public class UsuarioEmpresaController {
             return responseFactory.errorNotFound("No existe usuario con id: " + id);
         } catch (Exception e) {
             return responseFactory.internalServerError();
+        }
+    }
+
+    @PostMapping("/usuarios/{id}/fotoPerfil")
+    public ResponseEntity<Object> actualizarFotoPerfil(@PathVariable Long id, 
+                                                       @RequestParam("archivo") MultipartFile archivo) {
+        try {
+            // Actualizar la foto en el servicio
+            UsuarioEmpresa usuarioActualizado = usuarioEmpresaService.actualizarFotoPerfil(id, archivo);
+            // Convertir a DTO usando el mapper
+            UsuarioEmpresaDTO usuarioDTO = usuarioEmpresaMapper.toDTO(usuarioActualizado);
+            
+            // Construir la respuesta usando el builder de HttpBodyResponse
+            HttpBodyResponse response = new HttpBodyResponse.Builder()
+                    .message("Foto de perfil actualizada correctamente")
+                    .data(usuarioDTO)
+                    .build();
+            
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al guardar el archivo: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado: " + e.getMessage());
         }
     }
 

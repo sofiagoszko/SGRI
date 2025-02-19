@@ -7,14 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+
 import lombok.Data;
 
 @Entity
@@ -47,6 +40,8 @@ public class UsuarioEmpresa {
     private String cargo;
     @Column(name = "departamento")
     private String departamento;
+    @Column(name = "foto_perfil")
+    private String fotoPerfil;
 
     //un usuario empresa puede tener muchos requerimientos emitidos
     @JsonIgnore
@@ -103,6 +98,14 @@ public class UsuarioEmpresa {
     }
     public void nuevoComentario(Comentario comentario){
         comentarios.add(comentario);
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
     
 }

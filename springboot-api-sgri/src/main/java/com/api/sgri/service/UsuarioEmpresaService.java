@@ -1,18 +1,27 @@
 package com.api.sgri.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.api.sgri.mapper.UsuarioEmpresaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.api.sgri.exception.DuplicateUserException;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.api.sgri.dto.UsuarioEmpresaDTO;
+import com.api.sgri.exception.DuplicateUserException;
 import com.api.sgri.exception.NotFoundException;
+import com.api.sgri.mapper.UsuarioEmpresaMapper;
 import com.api.sgri.model.UsuarioEmpresa;
 import com.api.sgri.repository.UsuarioEmpresaRepository;
+
 
 
 @Service
@@ -25,6 +34,9 @@ public class UsuarioEmpresaService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${ruta.archivos}")
+    private String rutaArchivos;
 
     public UsuarioEmpresa crearUsuarioEmpresa(UsuarioEmpresaDTO usuarioEmpresaDTO) throws Exception {
       
@@ -120,4 +132,20 @@ public class UsuarioEmpresaService {
             return usuario;
     }
 
+    public UsuarioEmpresa actualizarFotoPerfil(Long id, MultipartFile archivo) throws IOException, NotFoundException {
+        UsuarioEmpresa usuario = usuarioEmpresaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+    
+        if (archivo == null || archivo.isEmpty()) {
+            throw new IOException("No se proporcionó un archivo válido");
+        }
+    
+        String nombreArchivo = UUID.randomUUID().toString() + "-" + archivo.getOriginalFilename();
+        Path destino = Paths.get(rutaArchivos, nombreArchivo);
+        Files.copy(archivo.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
+    
+        usuario.setFotoPerfil(nombreArchivo);
+        return usuarioEmpresaRepository.save(usuario);
+    }
+    
 }
