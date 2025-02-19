@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.api.sgri.service.RequerimientoService;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +43,11 @@ public class ComentarioMapper {
         dto.setDescripcion(comentario.getDescripcion());
         dto.setFecha_hora(comentario.getFecha_hora());
         dto.setUsuarioEmisorComentario(comentario.getUsuarioEmisorComentario().getId());
-
+        dto.setRequerimiento(comentario.getRequerimiento().getId());
         // Mapear archivos adjuntos de Comentario
         if (comentario.getArchivosComentario() != null) {
             List<String> archivosComentario = comentario.getArchivosComentario().stream()
-                .map(archivoComentario -> archivoComentario.getRuta())
+                .map(archivoComentario -> archivoComentario.getNombre())
                 .collect(Collectors.toList());
             dto.setArchivosComentario(archivosComentario);
         }
@@ -65,7 +66,6 @@ public class ComentarioMapper {
         comentario.setDescripcion(dto.getDescripcion());
         comentario.setFecha_hora(dto.getFecha_hora());
         comentario.setUsuarioEmisorComentario(usuarioEmpresaMapper.fromDTO(usuarioEmpresaService.getUsuarioEmpresaById(dto.getUsuarioEmisorComentario())));
-
         // Mapear archivos adjuntos de ComentarioDTO a Comentario
         if (dto.getArchivosComentario() != null) {
             List<ArchivoComentario> archivosComentario = new ArrayList<>();

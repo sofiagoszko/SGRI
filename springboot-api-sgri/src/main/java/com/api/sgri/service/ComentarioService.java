@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.api.sgri.model.ArchivoAdjunto;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,17 +32,25 @@ public class ComentarioService {
     @Autowired
     private ComentarioMapper comentarioMapper;
 
-    public Comentario crearComentario(ComentarioDTO comentarioDTO, Requerimiento requerimiento) throws Exception {
+    public Comentario crearComentario(ComentarioDTO comentarioDTO, Requerimiento requerimiento, List<MultipartFile> archivos) throws Exception {
         try{
-
-            //validar que sean menos que 5 archivos adjuntos
-//            List<Comentario> comentarios = comentarioRepository.findByRequerimiento_Id(comentarioDTO.getRequerimiento().getId());
-//            if(comentarios.size()>=5){
-//                throw new ListFullException("El comentario no puede tener más de 5 archivos adjuntos");
-//            }
-
             Comentario comentario = comentarioMapper.fromDTO(comentarioDTO);
             comentario.setRequerimiento(requerimiento);
+
+            if (archivos != null && !archivos.isEmpty() && archivos.size()<=5) {
+                List<ArchivoComentario> archivosComentario = new ArrayList<>();
+                for (MultipartFile archivo : archivos) {
+                    String rutaArchivo = archivoComentarioService.guardarArchivo(archivo);
+                    ArchivoComentario archivoComentario = new ArchivoComentario();
+                    archivoComentario.setNombre(archivo.getOriginalFilename());
+                    archivoComentario.setRuta(rutaArchivo);
+                    archivoComentario.setComentario(comentario);
+                    archivosComentario.add(archivoComentario);
+                }
+                comentario.setArchivosComentario(archivosComentario);
+            }else if (archivos != null && archivos.size()>5) {
+                throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
+            }
 
             comentarioRepository.save(comentario);
             return comentario;
@@ -85,17 +95,17 @@ public class ComentarioService {
             comentario.setArchivosComentario(new ArrayList<>());
         }
 
-        List<ArchivoComentario> archivosCargados = new ArrayList<>();
-        for (MultipartFile archivo : archivos) {
-            String rutaArchivo = archivoComentarioService.guardarArchivoComentario(archivo); 
-            ArchivoComentario archivoComentario = new ArchivoComentario();
-            archivoComentario.setNombre(archivo.getOriginalFilename());
-            archivoComentario.setRuta(rutaArchivo);
-            archivoComentario.setComentario(comentario);
+         List<ArchivoComentario> archivosCargados = new ArrayList<>();
+         for (MultipartFile archivo : archivos) {
+             String rutaArchivo = archivoComentarioService.guardarArchivo(archivo);
+             ArchivoComentario archivoComentario = new ArchivoComentario();
+             archivoComentario.setNombre(archivo.getOriginalFilename());
+             archivoComentario.setRuta(rutaArchivo);
+             archivoComentario.setComentario(comentario);
 
-            archivosCargados.add(archivoComentario);
-            comentario.getArchivosComentario().add(archivoComentario); 
-        }
+             archivosCargados.add(archivoComentario);
+             comentario.getArchivosComentario().add(archivoComentario);
+         }
 
         comentarioRepository.save(comentario);
         return archivosCargados;

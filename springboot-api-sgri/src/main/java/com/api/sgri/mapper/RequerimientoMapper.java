@@ -71,7 +71,7 @@ public class RequerimientoMapper {
 
         if (requerimiento.getArchivosAdjuntos() != null) {
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                    .map(archivoAdjunto -> "http://localhost:8080/api/requerimiento/archivoAdjunto/" + archivoAdjunto.getNombre())
+                    .map(archivoAdjunto -> archivoAdjunto.getNombre())
                     .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }
