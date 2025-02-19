@@ -247,9 +247,10 @@ public class RequerimientoController {
         }
     }
 
-    @GetMapping("/requerimientos/{idRequerimiento}/archivos/{idArchivo}")
-    public ResponseEntity<Object> getArchivo(@PathVariable Long idRequerimiento, @PathVariable Long idArchivo) {
+    @GetMapping("/requerimientos/{idRequerimiento}/archivos/{nombre}")
+    public ResponseEntity<Object> getArchivo(@PathVariable Long idRequerimiento, @PathVariable String nombre) {
         try{
+            Long idArchivo = archivoAdjuntoService.findByNombre(nombre).getId();
             ArchivoAdjunto archivoAdjunto = requerimientoService.getArchivoAdjuntoById(idRequerimiento, idArchivo);
 
             ArchivoAdjuntoDTO archivoAdjuntoDTO = archivoAdjuntoMapper.toDTO(archivoAdjunto);
@@ -261,15 +262,16 @@ public class RequerimientoController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         }catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe archivo adjunto con el id: " + idArchivo);
+            return responseFactory.errorNotFound("No existe archivo adjunto con el nombre: " + nombre + " para el requerimiento: " + idRequerimiento);
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }
     }
 
-    @DeleteMapping("/requerimientos/{idRequerimiento}/archivos/{idArchivo}")
-    public ResponseEntity<Object> deleteArchivo(@PathVariable Long idRequerimiento, @PathVariable Long idArchivo) {
+    @DeleteMapping("/requerimientos/{idRequerimiento}/archivos/{nombre}")
+    public ResponseEntity<Object> deleteArchivo(@PathVariable Long idRequerimiento, @PathVariable String nombre) {
         try{
+            Long idArchivo = archivoAdjuntoService.findByNombre(nombre).getId();
             ArchivoAdjunto archivoAdjunto = requerimientoService.deleteArchivoComentarioById(idRequerimiento, idArchivo);
 
             ArchivoAdjuntoDTO archivoAdjuntoDTO = archivoAdjuntoMapper.toDTO(archivoAdjunto);
@@ -281,7 +283,7 @@ public class RequerimientoController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         }catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe archivo adjunto con el id: " + idArchivo);
+            return responseFactory.errorNotFound("No existe archivo adjunto con el nombre: " + nombre + " para el requerimiento: " + idRequerimiento);
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }

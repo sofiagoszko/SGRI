@@ -25,11 +25,7 @@ public class AuthService {
         if (usuarioEmpresa == null) {
             throw new NotFoundException("No existe usuario con nombre de usuario: " + userName);
         }
-    
-        // Validar la contraseña
-        // if (!usuarioEmpresa.getPassword().equals(password)) {
-        //     throw new UnauthorizedException("Credenciales inválidas");
-        // }
+
         if (!passwordEncoder.matches(password, usuarioEmpresa.getPassword())) {
             throw new UnauthorizedException("Credenciales inválidas");
         }

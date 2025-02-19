@@ -89,16 +89,16 @@ public class UsuarioEmpresa {
     }
 
     
-    public void nuevoRequerimientoEmitido(Requerimiento requerimiento){
-        requerimientosEmitidos.add(requerimiento);
-    }
-
-    public void nuevoRequerimientoPropietario(Requerimiento requerimiento){
-        requerimientosPropietario.add(requerimiento);
-    }
-    public void nuevoComentario(Comentario comentario){
-        comentarios.add(comentario);
-    }
+//    public void nuevoRequerimientoEmitido(Requerimiento requerimiento){
+//        requerimientosEmitidos.add(requerimiento);
+//    }
+//
+//    public void nuevoRequerimientoPropietario(Requerimiento requerimiento){
+//        requerimientosPropietario.add(requerimiento);
+//    }
+//    public void nuevoComentario(Comentario comentario){
+//        comentarios.add(comentario);
+//    }
 
     public String getFotoPerfil() {
         return fotoPerfil;
