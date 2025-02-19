@@ -83,7 +83,7 @@ public class RequerimientoService {
                 archivosAdjuntos.add(archivoAdjunto);
             }
             requerimiento.setArchivosAdjuntos(archivosAdjuntos);
-        }else if (archivos.size()>5) {
+        }else if (archivos != null && archivos.size()>5) {
             throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
         }
 
