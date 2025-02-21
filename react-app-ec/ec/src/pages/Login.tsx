@@ -22,7 +22,7 @@ function Login() {
     // navigate("/home");
     try {
       console.log(AUTH_ENDPOINT)
-        const response = await fetch(AUTH_ENDPOINT, {
+        const response = await fetch("http://localhost:8080/api/usuario-empresa/credenciales", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

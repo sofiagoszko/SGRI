@@ -5,18 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.api.sgri.exception.BadRequestException;
+
 import com.api.sgri.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.api.sgri.dto.RequerimientoDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.RequerimientoMapper;
-import com.api.sgri.repository.CategoriaTipoRepository;
+
 import com.api.sgri.repository.RequerimientoRepository;
 import com.api.sgri.repository.TipoRequerimientoRepository;
 import com.api.sgri.repository.UsuarioEmpresaRepository;
@@ -31,8 +30,7 @@ public class RequerimientoService {
     @Autowired
     private UsuarioEmpresaRepository usuarioEmpresaRepository;
 
-    @Autowired
-    private CategoriaTipoRepository categoriaTipoRepository;
+
 
 
     @Autowired
@@ -43,20 +41,6 @@ public class RequerimientoService {
 
     @Autowired
     private ArchivoAdjuntoService archivoAdjuntoService;
-
-//    public Requerimiento crearRequerimiento(RequerimientoDTO dto) throws NotFoundException {
-//
-//        TipoRequerimiento tipoRequerimiento = tipoRequerimientoRepository.findById(dto.getTipoRequerimiento())
-//                .orElseThrow(() -> new NotFoundException("Tipo de Requerimiento no encontrado"));
-//
-//        UsuarioEmpresa usuarioEmisor = usuarioEmpresaRepository.findById(dto.getUsuarioEmisor())
-//                .orElseThrow(() -> new NotFoundException("Usuario Emisor no encontrado"));
-//
-//        UsuarioEmpresa usuarioDestinatario = dto.getUsuarioDestinatario() != null ? usuarioEmpresaRepository.findById(dto.getUsuarioDestinatario()).orElse(null) : null;
-//
-//        Requerimiento requerimiento = requerimientoMapper.fromDTO(dto, tipoRequerimiento, usuarioEmisor, usuarioDestinatario, new ArrayList<>());
-//        return requerimientoRepository.save(requerimiento);
-//    }
 
     public Requerimiento crearRequerimiento(RequerimientoDTO dto, List<MultipartFile> archivos) throws NotFoundException, IOException, RuntimeException {
 

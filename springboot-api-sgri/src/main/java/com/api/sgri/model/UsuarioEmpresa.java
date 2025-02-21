@@ -2,11 +2,11 @@ package com.api.sgri.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import lombok.Data;
 
