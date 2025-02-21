@@ -18,10 +18,10 @@ function Login() {
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowAlert(false);
+    //setShowAlert(true);
     // navigate("/home");
     try {
-      console.log(AUTH_ENDPOINT)
+      //console.log(AUTH_ENDPOINT)
         const response = await fetch("http://localhost:8080/api/usuario-empresa/credenciales", {
             method: 'POST',
             headers: {
@@ -33,21 +33,24 @@ function Login() {
             }),
         });
 
+        const data = await response.json();
+        console.log("Respuesta del backend:", data);
+
         if (response.ok) {
-            const data = await response.json();
+            //const data = await response.json();
             const authToken = data.data;
             localStorage.setItem('authToken', authToken);
-            navigate('/home'); // Redirige a home
+            navigate('/home'); 
         } else {
-            setAlertMessage('Email o contraseña invalidos')
+            setAlertMessage('Por favor, verifica tus credenciales y vuelve a intentarlo')
             setAlertType('warning')
-            setShowAlert(true); // Muestra un mensaje de error más descriptivo
+            setShowAlert(true); 
         }
     } catch (error) {
-      console.error("Error en la autenticación:", error.message);  
-      setAlertMessage('Email o contraseña invalidos')
-        setAlertType('warning')
-        setShowAlert(true);// Muestra un error en caso de fallo del servidor
+      console.error("Error en la autenticación:", error);  
+      setAlertMessage('Hubo un problema con el servidor. Inténtalo de nuevo más tarde.')
+      setAlertType('danger')
+      setShowAlert(true);
     }
   };
 
@@ -56,6 +59,13 @@ function Login() {
       <div className="bg-white p-5 rounded-5 card__login">
         <h1 className="mb-4 text-center">Iniciar sesión</h1>
         <form onSubmit={handleSubmit} className="d-flex flex-column">
+
+        {showAlert && alertMessage && (
+          <div className={`alert alert-${alertType}`} role="alert">
+            {alertMessage}
+          </div>
+        )} 
+
           <div className="mb-3">
             <label htmlFor="usuario" className="form-label">
               Usuario
