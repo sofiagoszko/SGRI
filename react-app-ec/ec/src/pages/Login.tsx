@@ -2,6 +2,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 import getBaseUrl from "../utils/getBaseUrl.js";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   // Estado para los campos del formulario y el error
@@ -40,6 +41,10 @@ function Login() {
             //const data = await response.json();
             const authToken = data.data;
             localStorage.setItem('authToken', authToken);
+            localStorage.setItem('user', usuario);
+            const decodedToken = jwtDecode(authToken) as {id: number};
+            const userId = decodedToken.id; 
+            localStorage.setItem('userId', userId.toString());
             navigate('/home'); 
         } else {
             setAlertMessage('Por favor, verifica tus credenciales y vuelve a intentarlo')

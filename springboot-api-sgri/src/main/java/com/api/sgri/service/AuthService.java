@@ -34,6 +34,7 @@ public class AuthService {
                 .generateToken()
                 .addClaim("userName", usuarioEmpresa.getUserName())
                 .addClaim("role", "USER")
+                .addClaim("id", usuarioEmpresa.getId())
                 //.addClaim("password", usuarioEmpresa.getPassword())
                 .setSubject(usuarioEmpresa.getUserName())
                 .setTimeHours(10) //token valido por 10 horas

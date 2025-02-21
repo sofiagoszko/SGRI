@@ -113,10 +113,14 @@ public class UsuarioEmpresaService {
         return usuarioEmpresaMapper.toDTO(usuario);
     }
 
-
-    public UsuarioEmpresa getUsuarioEmpresaByEmail(String email) {
-        return usuarioEmpresaRepository.findByEmail(email).orElse(null);
+    public UsuarioEmpresa getUsuarioEmpresaByEmail(String email) throws NotFoundException {
+        UsuarioEmpresa usuario = usuarioEmpresaRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
+        return usuario;
     }
+//    public UsuarioEmpresa getUsuarioEmpresaByEmail(String email) {
+//        return usuarioEmpresaRepository.findByEmail(email).orElse(null);
+//    }
 
     public UsuarioEmpresa getUsuarioEmpresaByUserName(String userName) {
         return usuarioEmpresaRepository.findByUserName(userName).orElse(null);

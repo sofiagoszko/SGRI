@@ -31,6 +31,8 @@ public class TipoRequerimientoController {
     private TipoRequerimientoService tipoRequerimientoService;
     @Autowired
     private ResponseFactory responseFactory;
+    @Autowired
+    private TipoRequerimientoMapper tipoRequerimientoMapper;
 
     @GetMapping("/{id}/categorias")
     public ResponseEntity<List<CategoriaTipo>> getCategoriasPorTipo(@PathVariable Long id) {
@@ -47,13 +49,12 @@ public class TipoRequerimientoController {
     @GetMapping("/tipos/{id}")
     public ResponseEntity<Object> getTipoDeRequerimiento(@PathVariable Long id){
         try {
-            // Obtener el tipo de requerimiento por su ID desde el servicio
             TipoRequerimiento tipoRequerimiento = tipoRequerimientoService.getTipoRequerimentoById(id);
+            TipoRequerimientoDTO  tipoRequerimientoDTO = tipoRequerimientoMapper.toDTO(tipoRequerimiento);
 
-            // Crear la respuesta
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Tipo de requerimiento obtenido con éxito")
-                    .data(tipoRequerimiento)
+                    .data(tipoRequerimientoDTO)
                     .build();
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
