@@ -1,17 +1,1 @@
-{
-  "root": [
-    "./src/app.tsx",
-    "./src/main.tsx",
-    "./src/vite-env.d.ts",
-    "./src/components/layout.tsx",
-    "./src/components/navbar.tsx",
-    "./src/components/showpassword.tsx",
-    "./src/pages/examentemplate.tsx",
-    "./src/pages/home.tsx",
-    "./src/pages/login.tsx",
-    "./src/pages/nuevoexamen.tsx",
-    "./src/pages/registrarse.tsx"
-  ],
-  "errors": true,
-  "version": "5.6.2"
-}
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/alerts.tsx","./src/components/cargadorarchivo.tsx","./src/components/countdown.tsx","./src/components/desplegableimagenes.tsx","./src/components/layout.tsx","./src/components/navbar.tsx","./src/components/warning.tsx","./src/pages/home.tsx","./src/pages/login.tsx","./src/pages/recuperarpass.tsx","./src/pages/registro.tsx","./src/pages/requerimiento/misasignaciones.tsx","./src/pages/requerimiento/misasignacionesapi.tsx","./src/pages/requerimiento/missolicitudes.tsx","./src/pages/requerimiento/nuevo.tsx","./src/pages/requerimiento/solicitudes.tsx"],"errors":true,"version":"5.6.2"}

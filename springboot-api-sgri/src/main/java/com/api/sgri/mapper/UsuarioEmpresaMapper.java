@@ -1,9 +1,9 @@
 package com.api.sgri.mapper;
 
-import com.api.sgri.model.UsuarioEmpresa;
-import com.api.sgri.dto.UsuarioEmpresaDTO;
-
 import org.springframework.stereotype.Component;
+
+import com.api.sgri.dto.UsuarioEmpresaDTO;
+import com.api.sgri.model.UsuarioEmpresa;
 
 @Component
 public class UsuarioEmpresaMapper {
@@ -23,6 +23,7 @@ public class UsuarioEmpresaMapper {
         dto.setLegajo(usuarioEmpresa.getLegajo());
         dto.setCargo(usuarioEmpresa.getCargo());
         dto.setDepartamento(usuarioEmpresa.getDepartamento());
+        dto.setFotoPerfil(usuarioEmpresa.getFotoPerfil());
 
         return dto;
     }
@@ -39,6 +40,7 @@ public class UsuarioEmpresaMapper {
         usuarioEmpresa.setLegajo(dto.getLegajo());
         usuarioEmpresa.setCargo(dto.getCargo());
         usuarioEmpresa.setDepartamento(dto.getDepartamento());
+        usuarioEmpresa.setFotoPerfil(dto.getFotoPerfil());
 
         return usuarioEmpresa;
     }

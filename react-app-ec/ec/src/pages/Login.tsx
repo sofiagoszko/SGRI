@@ -1,7 +1,8 @@
 ﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import getBaseUrl from "../utils/getBaseUrl";
+import getBaseUrl from "../utils/getBaseUrl.js";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   // Estado para los campos del formulario y el error
@@ -11,42 +12,51 @@ function Login() {
   const [alertType, setAlertType] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
-  const endpoint = getBaseUrl();
 
-  const AUTH_ENDPOINT = "api/usuario-empresa/credenciales"; // Constante para la URL de autenticación
+
+  const AUTH_ENDPOINT = `${getBaseUrl()}/api/usuario-empresa/credenciales`; // Constante para la URL de autenticación
 
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowAlert(false);
-    navigate("/home");
-    // try {
-    //     const response = await fetch(`${endpoint}${AUTH_ENDPOINT}`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({
-    //             email: usuario,
-    //             password: password,
-    //         }),
-    //     });
+    //setShowAlert(true);
+    // navigate("/home");
+    try {
+      //console.log(AUTH_ENDPOINT)
+        const response = await fetch("http://localhost:8080/api/usuario-empresa/credenciales", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userName: usuario,
+                password: password,
+            }),
+        });
 
-    //     if (response.ok) {
-    //         const data = await response.json();
-    //         const authToken = data.data;
-    //         localStorage.setItem('authToken', authToken);
-    //         navigate('/home'); // Redirige a home
-    //     } else {
-    //         setAlertMessage('Email o contraseña invalidos')
-    //         setAlertType('warning')
-    //         setShowAlert(true); // Muestra un mensaje de error más descriptivo
-    //     }
-    // } catch (error) {
-    //     setAlertMessage('Email o contraseña invalidos')
-    //     setAlertType('warning')
-    //     setShowAlert(true);// Muestra un error en caso de fallo del servidor
-    // }
+        const data = await response.json();
+        console.log("Respuesta del backend:", data);
+
+        if (response.ok) {
+            //const data = await response.json();
+            const authToken = data.data;
+            localStorage.setItem('authToken', authToken);
+            localStorage.setItem('user', usuario);
+            const decodedToken = jwtDecode(authToken) as {id: number};
+            const userId = decodedToken.id; 
+            localStorage.setItem('userId', userId.toString());
+            navigate('/home'); 
+        } else {
+            setAlertMessage('Por favor, verifica tus credenciales y vuelve a intentarlo')
+            setAlertType('warning')
+            setShowAlert(true); 
+        }
+    } catch (error) {
+      console.error("Error en la autenticación:", error);  
+      setAlertMessage('Hubo un problema con el servidor. Inténtalo de nuevo más tarde.')
+      setAlertType('danger')
+      setShowAlert(true);
+    }
   };
 
   return (
@@ -54,6 +64,13 @@ function Login() {
       <div className="bg-white p-5 rounded-5 card__login">
         <h1 className="mb-4 text-center">Iniciar sesión</h1>
         <form onSubmit={handleSubmit} className="d-flex flex-column">
+
+        {showAlert && alertMessage && (
+          <div className={`alert alert-${alertType}`} role="alert">
+            {alertMessage}
+          </div>
+        )} 
+
           <div className="mb-3">
             <label htmlFor="usuario" className="form-label">
               Usuario
@@ -62,6 +79,8 @@ function Login() {
               type="text"
               className="form-control rounded-3"
               id="usuario"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
               required
             />
           </div>
@@ -73,6 +92,8 @@ function Login() {
               type="password"
               className="form-control rounded-3"
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

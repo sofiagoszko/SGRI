@@ -2,9 +2,19 @@ package com.api.sgri.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
@@ -50,11 +60,14 @@ public class Requerimiento {
     @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
 
-    public Requerimiento(){
+    //un requerimiento puede tener asociados varios archivos
+    @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>(); 
 
+    public Requerimiento() {
     }
 
-    public Requerimiento(String estado, String prioridad, String fechaHora, String asunto, String descripcion, String codigo, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> comentarios) {
+    public Requerimiento(String estado, String prioridad, String fechaHora, String asunto, String descripcion, String codigo, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<ArchivoAdjunto> archivosAdjuntos, List<Comentario> comentarios) {
         this.estado = estado;
         this.prioridad = prioridad;
         this.fechaHora = fechaHora;
@@ -64,6 +77,7 @@ public class Requerimiento {
         this.tipoRequerimiento = tipoRequerimiento;
         this.usuarioEmisor = usuarioEmisor;
         this.usuarioDestinatario = usuarioDestinatario;
+        this.archivosAdjuntos = (archivosAdjuntos != null) ? archivosAdjuntos : new ArrayList<>();
         this.comentarios = (comentarios != null) ? comentarios : new ArrayList<>();
     }
 

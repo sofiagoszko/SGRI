@@ -1,7 +1,5 @@
 package com.api.sgri.dto;
 
-import com.api.sgri.model.UsuarioEmpresa;
-
 import lombok.Data;
 
 @Data
@@ -16,6 +14,7 @@ public class UsuarioEmpresaDTO {
     private int legajo;
     private String cargo;
     private String departamento;
+    private String fotoPerfil;
 
     public UsuarioEmpresaDTO(){
         
@@ -32,6 +31,14 @@ public class UsuarioEmpresaDTO {
         this.legajo = legajo;
         this.cargo = cargo;
         this.departamento = departamento;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
 

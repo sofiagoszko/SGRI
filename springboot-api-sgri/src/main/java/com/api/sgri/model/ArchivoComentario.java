@@ -12,8 +12,8 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "ArchivosAdjuntos")
-public class ArchivoAdjunto {
+@Table(name = "ArchivosComentario")
+public class ArchivoComentario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class ArchivoAdjunto {
     private String ruta;
 
     @ManyToOne
-    @JoinColumn(name = "requerimiento_id")
-    private Requerimiento requerimiento;
+    @JoinColumn(name = "comentario_id")
+    private Comentario comentario;
 
 }
