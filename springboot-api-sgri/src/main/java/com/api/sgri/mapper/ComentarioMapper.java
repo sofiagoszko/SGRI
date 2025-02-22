@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.api.sgri.service.RequerimientoService;
+
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 import com.api.sgri.dto.ComentarioDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.model.ArchivoComentario;
-import com.api.sgri.dto.ArchivoComentarioDTO;
+
 import com.api.sgri.model.Comentario;
 import com.api.sgri.service.ArchivoComentarioService;
-import com.api.sgri.service.ComentarioService;
+
 import com.api.sgri.service.UsuarioEmpresaService;
-import com.api.sgri.mapper.UsuarioEmpresaMapper;
+
 
 @Component
 public class ComentarioMapper {
@@ -28,8 +28,6 @@ public class ComentarioMapper {
     @Autowired
     private UsuarioEmpresaMapper usuarioEmpresaMapper;
 
-    @Autowired
-    private ArchivoComentarioService archivoComentarioService;
 
     // Convertir de Comentario a ComentarioDTO
     @Mappings({

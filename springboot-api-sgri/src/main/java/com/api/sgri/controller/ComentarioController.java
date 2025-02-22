@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+
 import java.util.List;
 
 
-import com.api.sgri.dto.RequerimientoDTO;
+
 import com.api.sgri.mapper.ArchivoComentarioMapper;
-import com.api.sgri.model.ArchivoAdjunto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -151,6 +151,7 @@ public class ComentarioController {
     @PostMapping("/comentarios/{id}/adjuntar")
     public ResponseEntity<Object> adjuntarArchivoComentario(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
         try {
+            getComentario(id);
             if (archivos.size() > 5) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
             }
@@ -173,7 +174,9 @@ public class ComentarioController {
                     .build();
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe comentario con id: " + id);
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
         }
     }

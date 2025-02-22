@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.api.sgri.model.ArchivoAdjunto;
-import lombok.Data;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,15 +16,14 @@ import com.api.sgri.model.ArchivoComentario;
 import com.api.sgri.model.Comentario;
 import com.api.sgri.model.Requerimiento;
 import com.api.sgri.repository.ComentarioRepository;
-import com.api.sgri.repository.UsuarioEmpresaRepository;
+
 
 @Service
 public class ComentarioService {
 
     @Autowired
     private ComentarioRepository comentarioRepository;
-    @Autowired
-    private UsuarioEmpresaRepository usuarioEmpresaRepository;
+
     @Autowired
     private ArchivoComentarioService archivoComentarioService;
 

@@ -1,6 +1,5 @@
 package com.api.sgri.dto;
 
-import com.api.sgri.model.CategoriaTipo;
 import com.api.sgri.model.TipoRequerimiento;
 
 import lombok.Data;

@@ -1,5 +1,5 @@
 package com.api.sgri.controller;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.ArchivoAdjuntoMapper;
 import com.api.sgri.service.ArchivoAdjuntoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,6 +91,8 @@ public class RequerimientoController {
                     .build();
             return ResponseEntity.status(data.getStatusCode()).body(data);
 
+        }  catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe requerimiento con id: " + id);
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }
@@ -199,6 +201,8 @@ public class RequerimientoController {
     @PostMapping("/requerimientos/{id}/adjuntar")
       public ResponseEntity<Object> adjuntarArchivos(@PathVariable Long id, @RequestParam("archivos") List<MultipartFile> archivos) {
         try {
+            getRequerimiento(id);
+
             if (archivos.size() > 5) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pueden adjuntar más de 5 archivos.");
            }
@@ -220,6 +224,8 @@ public class RequerimientoController {
 
          return ResponseEntity.status(data.getStatusCode()).body(data);
 
+        } catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe requerimiento con id: " + id);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al adjuntar archivos: " + e.getMessage());
         }

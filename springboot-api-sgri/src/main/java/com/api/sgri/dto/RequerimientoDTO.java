@@ -2,8 +2,6 @@ package com.api.sgri.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.api.sgri.model.ArchivoAdjunto;
-import com.api.sgri.model.Requerimiento;
 import lombok.Data;
 
 @Data

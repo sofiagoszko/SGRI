@@ -88,6 +88,24 @@ public class UsuarioEmpresaController {
         }
     }
 
+    @GetMapping("/usuarios/email/{email}")
+    public ResponseEntity<Object> getUsuarioByEmail(@PathVariable String email) throws NotFoundException {
+        try {
+            UsuarioEmpresaDTO usuario = usuarioEmpresaMapper.toDTO(usuarioEmpresaService.getUsuarioEmpresaByEmail(email));
+
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Usuario obtenido con éxito")
+                    .data(usuario)
+                    .build();
+
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        } catch (NotFoundException e) {
+            return responseFactory.errorNotFound("No existe usuario con email: " + email);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
     @PostMapping("/credenciales")
     public ResponseEntity<Object> loginByCredentials(@RequestBody AuthDTO authDTO) {
 

@@ -12,6 +12,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.api.sgri.jwt.JwtAuthFilter;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,12 +28,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Desactiva CSRF, se recomienda si estás usando autenticación por token
+                .csrf(csrf -> csrf.disable())  // Desactiva CSRF para autenticación con JWT
+                .cors(cors -> corsFilter()) // Habilita CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuario-empresa/", "/api/usuario-empresa/registracion",
-                                "/api/usuario-empresa/credenciales").permitAll()  // Rutas públicas
-                        .anyRequest().hasRole("USER")  // Solo usuarios con ROLE_USER pueden acceder
-
+                                "/api/usuario-empresa/credenciales", "/api/usuario-empresa/usuarios/email/**").permitAll()  // Rutas públicas
+                        .requestMatchers("/api/**").authenticated() // Protege todas las rutas de la API
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Filtro para validar el JWT
 
@@ -38,5 +43,17 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();  // Configura el codificador de contraseñas
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*"); // Permite todos los orígenes (dominios)
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }

@@ -1,7 +1,6 @@
 package com.api.sgri.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.api.sgri.exception.NotFoundException;
@@ -35,6 +34,7 @@ public class AuthService {
                 .generateToken()
                 .addClaim("userName", usuarioEmpresa.getUserName())
                 .addClaim("role", "USER")
+                .addClaim("id", usuarioEmpresa.getId())
                 //.addClaim("password", usuarioEmpresa.getPassword())
                 .setSubject(usuarioEmpresa.getUserName())
                 .setTimeHours(10) //token valido por 10 horas

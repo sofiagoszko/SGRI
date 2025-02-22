@@ -1,7 +1,7 @@
 package com.api.sgri.dto;
 import java.util.List;
 
-import com.api.sgri.model.Requerimiento;
+
 
 import lombok.Data;
 

@@ -11,9 +11,9 @@ import com.api.sgri.dto.TipoRequerimientoDTO;
 import com.api.sgri.exception.NotFoundException;
 import com.api.sgri.mapper.TipoRequerimientoMapper;
 import com.api.sgri.model.CategoriaTipo;
-import com.api.sgri.model.Requerimiento;
+
 import com.api.sgri.model.TipoRequerimiento;
-import com.api.sgri.model.UsuarioEmpresa;
+
 import com.api.sgri.repository.CategoriaTipoRepository;
 import com.api.sgri.repository.TipoRequerimientoRepository;
 

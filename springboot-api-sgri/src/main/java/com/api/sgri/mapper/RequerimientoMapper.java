@@ -21,15 +21,10 @@ import com.api.sgri.model.UsuarioEmpresa;
 @Component
 public class RequerimientoMapper {
 
-    @Autowired
-    private UsuarioEmpresaMapper usuarioMapper;
 
     @Autowired
     private ComentarioMapper comentarioMapper;
 
-
-    @Autowired
-    private CategoriaTipoMapper categoriaTipoMapper;
 
 
     public RequerimientoMapper() {
@@ -62,12 +57,7 @@ public class RequerimientoMapper {
             requerimiento.setComentarios(new ArrayList<>());
         }
 
-//        if (requerimiento.getArchivosAdjuntos() != null) {
-//            List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-//                .map(archivoAdjunto -> archivoAdjunto.getRuta())
-//                .collect(Collectors.toList());
-//            dto.setArchivosAdjuntos(archivosAdjuntos);
-//        }
+
 
         if (requerimiento.getArchivosAdjuntos() != null) {
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
