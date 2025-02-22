@@ -1,7 +1,8 @@
 ﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./RecuperarPass.css";
-import getBaseUrl from "../utils/getBaseUrl";
+import Swal from "sweetalert2";
+//import getBaseUrl from "../utils/getBaseUrl";
 
 function recuperacion() {
   const [email, setEmail] = useState("");
@@ -14,33 +15,42 @@ function recuperacion() {
   const handleSubmit = async (e:any) => {
     e.preventDefault();
     setShowAlert(false);
-    navigate('/')
-    // try {
-    //     const response = await fetch(`http://localhost:8080/api/usuario-empresa/usuarios/email/${encodeURIComponent(email)}`, {
-    //         method: 'GET',
+    //navigate('/')
 
-    //     });
-    //       console.log("URL de la solicitud:", `http://localhost:8080/api/usuario-empresa/usuarios/email/${encodeURIComponent(email)}`);
-    //       const data = await response.json();
-    //       console.log("Respuesta del backend:", data);
+    const url = `http://localhost:8080/api/usuario-empresa/usuarios/email/${email}`
+    console.log("URL: ", url)
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+        });
 
-    //     if (response.ok) {
-    //         setAlertMessage('Se ha enviado un correo para recuperar tu contraseña');
-    //         setAlertType("success");
-    //         setShowAlert(true);
-    //         //navigate('/');
-    //     } else {
-    //         setAlertMessage(data?.userFriendlyMessage || "No se encontró un usuario con ese correo");
-    //         setAlertType('warning')
-    //         setShowAlert(true); 
-    //     }
-    // } catch (error) {
-    //   console.error("Error en la recuperación de contraseña:", error);
-    //   setAlertMessage(`Error: ${error.message}`);
-    //   setAlertType("danger");
-    //   setShowAlert(true);
-    //   console.error(error); 
-    // }
+        const  data = await response.json();
+        console.log("Respuesta del backend:", data);
+        console.log(response.ok);
+
+        if (response.ok) {
+          Swal.fire({
+            icon: "success",
+            title: "Éxito",
+            text: "Se ha enviado un correo para recuperar tu contraseña",
+          }).then(() => {
+            navigate("/");
+          });
+        }else{ 
+            console.error(data?.userFriendlyMessage || "No se encontró un usuario con ese correo");
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "No se encontró un usuario con ese correo",
+            });
+        }
+    } catch (error) {
+      console.error("Error en la recuperación de contraseña:", error);
+      setAlertMessage(`Error: ${error.message}`);
+      setAlertType("danger");
+      setShowAlert(true);
+      console.error(error); 
+    }
   };
 
   return (

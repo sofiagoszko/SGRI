@@ -40,7 +40,7 @@ function Login() {
       const { password, ...restoEmpleado } = resultado.data.data;
       setEmpleado(restoEmpleado);
     } catch (error) {
-      console.error("Error al cargar el empleado:", error);
+      console.error("Error al cargar el ususario:", error);
     }
   };
 
@@ -70,16 +70,16 @@ function Login() {
       Swal.fire({
         icon: "success",
         title: "Éxito",
-        text: "¡Empleado modificado con éxito!",
+        text: "¡Usuario modificado con éxito!",
       }).then(() => {
         navigate("/home");
       });
     } catch (error) {
-      console.error("Error al editar empleado:", error);
+      console.error("Error al editar usuario:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Hubo un error al editar el empleado",
+        text: "Hubo un error al editar el usuario",
       });
     }
   };

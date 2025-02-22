@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .cors(cors -> corsFilter()) // Habilita CORS
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuario-empresa/", "/api/usuario-empresa/registracion",
-                                "/api/usuario-empresa/credenciales").permitAll()  // Rutas públicas
+                                "/api/usuario-empresa/credenciales", "/api/usuario-empresa/usuarios/email/**").permitAll()  // Rutas públicas
                         .requestMatchers("/api/**").authenticated() // Protege todas las rutas de la API
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Filtro para validar el JWT
