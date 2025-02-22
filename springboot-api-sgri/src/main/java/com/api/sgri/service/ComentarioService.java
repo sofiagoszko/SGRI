@@ -1,42 +1,54 @@
 package com.api.sgri.service;
 
-import com.api.sgri.dto.ComentarioDTO;
-import com.api.sgri.exception.ListFullException;
-import com.api.sgri.exception.NotFoundException;
-import com.api.sgri.mapper.ComentarioMapper;
-import com.api.sgri.model.Comentario;
-import com.api.sgri.model.Requerimiento;
-import com.api.sgri.model.UsuarioEmpresa;
-import com.api.sgri.repository.ComentarioRepository;
-import com.api.sgri.repository.UsuarioEmpresaRepository;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.api.sgri.dto.ComentarioDTO;
+import com.api.sgri.exception.NotFoundException;
+import com.api.sgri.mapper.ComentarioMapper;
+import com.api.sgri.model.ArchivoComentario;
+import com.api.sgri.model.Comentario;
+import com.api.sgri.model.Requerimiento;
+import com.api.sgri.repository.ComentarioRepository;
+
 
 @Service
 public class ComentarioService {
 
     @Autowired
     private ComentarioRepository comentarioRepository;
+
     @Autowired
-    private UsuarioEmpresaRepository usuarioEmpresaRepository;
-    @Autowired
-    private RequerimientoService requerimientoService;
+    private ArchivoComentarioService archivoComentarioService;
 
     @Autowired
     private ComentarioMapper comentarioMapper;
 
-    public Comentario crearComentario(ComentarioDTO comentarioDTO, Requerimiento requerimiento) throws Exception {
+    public Comentario crearComentario(ComentarioDTO comentarioDTO, Requerimiento requerimiento, List<MultipartFile> archivos) throws Exception {
         try{
-
-            //validar que sean menos que 5 archivos adjuntos
-//            List<Comentario> comentarios = comentarioRepository.findByRequerimiento_Id(comentarioDTO.getRequerimiento().getId());
-//            if(comentarios.size()>=5){
-//                throw new ListFullException("El comentario no puede tener más de 5 archivos adjuntos");
-//            }
-
             Comentario comentario = comentarioMapper.fromDTO(comentarioDTO);
             comentario.setRequerimiento(requerimiento);
+
+            if (archivos != null && !archivos.isEmpty() && archivos.size()<=5) {
+                List<ArchivoComentario> archivosComentario = new ArrayList<>();
+                for (MultipartFile archivo : archivos) {
+                    String rutaArchivo = archivoComentarioService.guardarArchivo(archivo);
+                    ArchivoComentario archivoComentario = new ArchivoComentario();
+                    archivoComentario.setNombre(archivo.getOriginalFilename());
+                    archivoComentario.setRuta(rutaArchivo);
+                    archivoComentario.setComentario(comentario);
+                    archivosComentario.add(archivoComentario);
+                }
+                comentario.setArchivosComentario(archivosComentario);
+            }else if (archivos != null && archivos.size()>5) {
+                throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
+            }
 
             comentarioRepository.save(comentario);
             return comentario;
@@ -69,5 +81,47 @@ public class ComentarioService {
         return comentario;
     }
 
+     public List<ArchivoComentario> adjuntarArchivoComentario(Long comentarioId, List<MultipartFile> archivos) throws IOException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        if (archivos.size() > 5) {
+            throw new RuntimeException("No se pueden adjuntar más de 5 archivos.");
+        }
+
+        if (comentario.getArchivosComentario() == null) {
+            comentario.setArchivosComentario(new ArrayList<>());
+        }
+
+         List<ArchivoComentario> archivosCargados = new ArrayList<>();
+         for (MultipartFile archivo : archivos) {
+             String rutaArchivo = archivoComentarioService.guardarArchivo(archivo);
+             ArchivoComentario archivoComentario = new ArchivoComentario();
+             archivoComentario.setNombre(archivo.getOriginalFilename());
+             archivoComentario.setRuta(rutaArchivo);
+             archivoComentario.setComentario(comentario);
+
+             archivosCargados.add(archivoComentario);
+             comentario.getArchivosComentario().add(archivoComentario);
+         }
+
+        comentarioRepository.save(comentario);
+        return archivosCargados;
+    }
+
+    public ArchivoComentario getArchivoComentarioById(Long comentarioId, Long archivoId) throws NotFoundException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        ArchivoComentario archivoComentario = archivoComentarioService.getArchivoComentarioById(archivoId);
+        return archivoComentario;
+    }
+
+    public ArchivoComentario deleteArchivoComentarioById(Long comentarioId, Long archivoId) throws NotFoundException {
+        Comentario comentario = comentarioRepository.findById(comentarioId)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        return archivoComentarioService.deleteArchivoComentarioById(archivoId);
+    }
 
 }

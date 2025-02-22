@@ -1,7 +1,9 @@
 import React from "react";
+import { useAuth } from "../utils/AuthContext.jsx";
 import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import "./Layout.css";
+import imagenPerfil from "../SERGI_fondo_blanco.jpeg";
 
 function Layout({ children }) {
   return (
@@ -15,30 +17,39 @@ function Layout({ children }) {
   );
 }
 
-const UserCard = () => (
-  <div className="card card__user d-flex flex-column align-items-center rounded-bottom-4 shadow-sm border-0">
-    <img
-      src="https://attic.sh/dffv7kof6q1a62mama4i2x05pmyr"
-      alt="Imagen de perfil"
-      className="card__user-foto-perfil rounded-circle mt-3 border"
-    />
-    <p className="small mb-4">admin</p>
-    <div className="d-flex gap-3 mb-2">
-      {/* <a href="#" className="text-decoration-none text-black">
-        Mi cuenta
-      </a>{" "}
-      |{" "} */}
-      <NavLink to="/Home" className="text-decoration-none text-black">
-        Mi cuenta
-      </NavLink>
-      {" "}
-      |{" "}
-      <NavLink to="/" className="text-decoration-none text-black">
-        Cerrar sesión
-      </NavLink>
+// const user = localStorage.getItem('user');
+// const userId = localStorage.getItem('userId');
+
+const UserCard = () => {
+  const { handleLogout } = useAuth();
+  const user = localStorage.getItem("user");
+  const userId = localStorage.getItem("userId");
+  // Redirigir al login cuando se hace logout
+
+  return (
+    <div className="card card__user d-flex flex-column align-items-center rounded-bottom-4 shadow-sm border-0">
+      <img
+        src={imagenPerfil}
+        alt="Imagen de perfil"
+        className="card__user-foto-perfil rounded-circle mt-3 border"
+      />
+      <p className="small mb-4">{user}</p>
+      <div className="d-flex gap-3 mb-2">
+        <NavLink to={`/usuario/${userId}`} className="text-decoration-none text-black">
+          Mi cuenta
+        </NavLink>
+        {" "}
+        |{" "}
+        <button
+          onClick={handleLogout} // Llama a la función de logout desde el contexto
+          className="text-decoration-none text-black bg-transparent border-0"
+        >
+          Cerrar sesión
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const baseButtonStyle = "btn btn__menu d-flex flex-column";
 
@@ -46,6 +57,7 @@ const siLaRutaEs = (route: string) => {
   let location = useLocation();
   return location.pathname === route;
 };
+
 
 const NavCard = () => (
   <nav className="menu h-100 rounded-bottom-4 shadow-sm align-items-end">
