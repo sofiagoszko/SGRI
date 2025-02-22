@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import com.api.sgri.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,9 +32,6 @@ public class RequerimientoService {
 
     @Autowired
     private UsuarioEmpresaRepository usuarioEmpresaRepository;
-
-
-
 
     @Autowired
     private TipoRequerimientoRepository tipoRequerimientoRepository;
