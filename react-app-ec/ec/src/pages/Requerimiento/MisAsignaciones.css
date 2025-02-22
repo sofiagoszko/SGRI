@@ -22,3 +22,13 @@
 .lista-botones li:last-child {
   margin-bottom: 0;
 }
+
+.filtros{
+  padding: 5px;
+  min-width: 150px;
+}
+
+.boton{
+  background-color: #354f52;
+  color:#fff;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../utils/AuthContext.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout.js";
+import "./MisAsignaciones.css";
 
 const Nuevo = () => {
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -110,96 +111,92 @@ const Nuevo = () => {
 
         {/* Filtros */}
       <div className="d-flex flex-wrap gap-3 justify-content-between mb-4">
-      <div className="d-flex flex-wrap gap-3">
-      <div className="form-floating">
-      <select
-        name="tipos"
-        id="tipos"
-        className="form-select min-w-select"
-        value={filtros.tipoRequerimiento}
-        onChange={(e) => manejadorFiltros("tipoRequerimiento", e.target.value)}
-      >
-        <option value=""></option>
-        <option value="REH">REH</option>
-        <option value="ERR">ERR</option>
-        <option value="GOP">GOP</option>
-      </select>
-      <label htmlFor="tipos">Todos los tipos</label>
-      </div>
-      <div className="form-floating">
-      <select
-        name="categorias"
-        id="categorias"
-        className="form-select min-w-select"
-        value={filtros.categoriaTipo}
-        onChange={(e) => manejadorFiltros("categoriaTipo", e.target.value)}
-      >
-        <option value=""></option>
-        <option value="Hardware">Hardware</option>
-        <option value="Software">Software</option>
-        <option value="Red">Red</option>
-        <option value="Seguridad">Seguridad</option>
-      </select>
-      <label htmlFor="categorias">Todas las categorías</label>
-      </div>
-      <div className="form-floating">
-      <select
-        name="estados"
-        id="estados"
-        className="form-select min-w-select"
-        value={filtros.estado}
-        onChange={(e) => manejadorFiltros("estado", e.target.value)}
-      >
-        <option value=""></option>
-        <option>Abierto</option>
-        <option>Asignado</option>
-      </select>
-      <label htmlFor="estados">Todos los estados</label>
-      </div>
-      <div className="form-floating">
-      <select
-        name="propietario"
-        id="propietario"
-        className="form-select min-w-select"
-        value={filtros.usuarioDestinatario}
-        onChange={(e) => manejadorFiltros("usuarioDestinatario", e.target.value)}
-      >
-        <option value=""></option>
-        <option>Sofia</option>
-        <option>Aldo</option>
-        <option>Seba</option>
-        <option>Silvia</option>
-      </select>
-      <label htmlFor="propietario">Todos los propietarios</label>
-      </div>
-      </div>
-      <div>
-      <button className="btn btn-secondary" onClick={restablecerFiltros}>
-        Desfiltrar
-      </button>
-      </div>
-      </div>
-
-      {/* Segunda línea con los filtros de fecha */}
-      <div className="d-flex flex-wrap gap-3 justify-content-start mb-4">
-      <div className="form-floating">
-      <input
-      type="date"
-      id="fecha_desde"
-      className="form-control min-w-select"
-      onChange={(e) => manejadorFiltros("fechaDesde", e.target.value)}
-      />
-      <label htmlFor="fecha_desde">Fecha Desde</label>
-      </div>
-      <div className="form-floating">
-      <input
-      type="date"
-      id="fecha_hasta"
-      className="form-control min-w-select"
-      onChange={(e) => manejadorFiltros("fechaHasta", e.target.value)}
-      />
-      <label htmlFor="fecha_hasta">Fecha Hasta</label>
-      </div>
+        <div className="d-flex flex-wrap gap-3">
+        <div className="form-floating">
+        <select
+          name="tipos"
+          id="tipos"
+          className="form-select min-w-select filtros"
+          value={filtros.tipoRequerimiento}
+          onChange={(e) => manejadorFiltros("tipoRequerimiento", e.target.value)}
+        >
+          <option value=""></option>
+          <option value="REH">REH</option>
+          <option value="ERR">ERR</option>
+          <option value="GOP">GOP</option>
+        </select>
+        <label htmlFor="tipos">Tipo</label>
+        </div>
+        <div className="form-floating">
+        <select
+          name="categorias"
+          id="categorias"
+          className="form-select min-w-select filtros"
+          value={filtros.categoriaTipo}
+          onChange={(e) => manejadorFiltros("categoriaTipo", e.target.value)}
+        >
+          <option value=""></option>
+          <option value="Hardware">Hardware</option>
+          <option value="Software">Software</option>
+          <option value="Red">Red</option>
+          <option value="Seguridad">Seguridad</option>
+        </select>
+        <label htmlFor="categorias">Categoria</label>
+        </div>
+        <div className="form-floating">
+        <select
+          name="estados"
+          id="estados"
+          className="form-select min-w-select filtros"
+          value={filtros.estado}
+          onChange={(e) => manejadorFiltros("estado", e.target.value)}
+        >
+          <option value=""></option>
+          <option>Abierto</option>
+          <option>Asignado</option>
+        </select>
+        <label htmlFor="estados">Estado</label>
+        </div>
+        <div className="form-floating">
+        <select
+          name="propietario"
+          id="propietario"
+          className="form-select min-w-select filtros"
+          value={filtros.usuarioDestinatario}
+          onChange={(e) => manejadorFiltros("usuarioDestinatario", e.target.value)}
+        >
+          <option value=""></option>
+          <option>Sofia</option>
+          <option>Aldo</option>
+          <option>Seba</option>
+          <option>Silvia</option>
+        </select>
+        <label htmlFor="propietario">Propietario</label>
+        </div>
+        </div>
+        <div className="form-floating">
+          <input
+          type="date"
+          id="fecha_desde"
+          className="form-control min-w-select filtros"
+          onChange={(e) => manejadorFiltros("fechaDesde", e.target.value)}
+          />
+          <label htmlFor="fecha_desde">Fecha Desde</label>
+        </div>
+        <div className="form-floating">
+        <input
+          type="date"
+          id="fecha_hasta"
+          className="form-control min-w-select filtros"
+          onChange={(e) => manejadorFiltros("fechaHasta", e.target.value)}
+          />
+          <label htmlFor="fecha_hasta">Fecha Hasta</label>
+        </div>
+        <div className="d-flex justify-content-center">
+          <button className="btn btn-secondary boton" onClick={restablecerFiltros}>
+            Limpiar
+          </button>
+        </div>
       </div>
         {/* FIN Filtros */}
         {/* Tabla */}
