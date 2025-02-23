@@ -143,10 +143,10 @@ public class UsuarioEmpresaController {
     }
 
     @PostMapping("/registracion")
-    public ResponseEntity<Object> createUsuario(@RequestBody UsuarioEmpresa usuarioEmpresa) {
+    public ResponseEntity<Object> createUsuario(@RequestBody UsuarioEmpresaDTO usuarioEmpresaDTO) {
         try {
-            //UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresaDTO);
-            usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresa);
+            UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresaDTO);
+
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Se ha registrado el usuario")
@@ -171,11 +171,11 @@ public class UsuarioEmpresaController {
     }
 
     @PutMapping("/usuarios/{id}")
-    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioUpdateRequest request) {
+    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioEmpresaDTO usuario) {
         try {
             UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.getUsuarioEmpresaByIdEntity(id);
 
-            UsuarioEmpresaDTO usuarioActualizado = usuarioEmpresaService.updateUsuarioEmpresa(usuarioEmpresa, request.getUsuario(), request.getPassword());
+            UsuarioEmpresaDTO usuarioActualizado = usuarioEmpresaService.updateUsuarioEmpresa(usuarioEmpresa, usuario);
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Usuario actualizado con éxito")

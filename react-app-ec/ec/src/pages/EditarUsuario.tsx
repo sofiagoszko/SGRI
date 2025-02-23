@@ -56,23 +56,10 @@ function Login() {
     e.preventDefault();
 
     try {
-      const actualizado = {
-        usuario: {
-          nombre: empleado.nombre,
-          apellido: empleado.apellido,
-          email: empleado.email,
-          userName: empleado.userName,
-          legajo: empleado.legajo,
-          cargo: empleado.cargo,
-          departamento: empleado.departamento,
-        },
-        password: empleado.password, // Ahora la contraseña se envía dentro del DTO
-      };
-
       const token = localStorage.getItem("authToken"); // Obtiene el token
       await axios.put(
         `http://localhost:8080/api/usuario-empresa/usuarios/${id}`,
-        actualizado,
+        empleado,
         {
           headers: {
             Authorization: `Bearer ${token}`,
