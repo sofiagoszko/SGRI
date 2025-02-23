@@ -160,29 +160,6 @@ public class RequerimientoController {
         }
     }
 
-//    @PostMapping("/nuevo")
-//    public ResponseEntity<Object> createRequerimiento(@RequestBody RequerimientoDTO requerimientoDTO) {
-//        try {
-//
-//            Requerimiento requerimiento = requerimientoService.crearRequerimiento(requerimientoDTO);
-//
-//            RequerimientoDTO requerimientoDTORespuesta = requerimientoMapper.toDTO(requerimiento);
-//
-//            HttpBodyResponse data = new HttpBodyResponse.Builder()
-//                    .message("Se ha creado el requerimiento")
-//                    .status("Success")
-//                    .statusCode(201)
-//                    .data(requerimientoDTORespuesta)
-//                    .build();
-//
-//            return ResponseEntity
-//                    .status(data.getStatusCode())
-//                    .body(data);
-//             }catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(400).body("Error: " + e.getMessage());
-//             }
-//    }
 
     @PostMapping(value = "/nuevo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> createRequerimiento(

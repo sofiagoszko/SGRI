@@ -8,6 +8,7 @@ import com.api.sgri.dto.RequerimientoDTO2;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.api.sgri.dto.ComentarioDTO;
@@ -21,6 +22,9 @@ import com.api.sgri.model.UsuarioEmpresa;
 
 @Component
 public class RequerimientoMapper2 {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Autowired
     private ComentarioMapper comentarioMapper;
@@ -60,9 +64,9 @@ public class RequerimientoMapper2 {
 
 
         if (requerimiento.getArchivosAdjuntos() != null) {
-            String baseUrl = "http://localhost:8080/api/requerimiento/requerimientos/" + requerimiento.getId() + "/archivo/";
+            String url = baseUrl+"/api/requerimiento/requerimientos/" + requerimiento.getId() + "/archivo/";
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                    .map(archivoAdjunto -> baseUrl + archivoAdjunto.getNombre())
+                    .map(archivoAdjunto -> url + archivoAdjunto.getNombre())
                     .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }

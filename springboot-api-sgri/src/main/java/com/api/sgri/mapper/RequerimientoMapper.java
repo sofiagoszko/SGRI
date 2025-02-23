@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.api.sgri.dto.ComentarioDTO;
@@ -25,7 +26,8 @@ public class RequerimientoMapper {
     @Autowired
     private ComentarioMapper comentarioMapper;
 
-
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     public RequerimientoMapper() {
     }
@@ -60,8 +62,9 @@ public class RequerimientoMapper {
 
 
         if (requerimiento.getArchivosAdjuntos() != null) {
+            String url = baseUrl+"/api/requerimiento/requerimientos/" + requerimiento.getId() + "/archivo/";
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                    .map(archivoAdjunto -> archivoAdjunto.getNombre())
+                    .map(archivoAdjunto -> url + archivoAdjunto.getNombre())
                     .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }
