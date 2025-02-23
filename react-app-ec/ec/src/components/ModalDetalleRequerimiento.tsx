@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Requerimiento } from "../types/Requerimiento";
 import ColoresEstado from "../utils/ColoresEstado";
 import axios from "axios";
+import { Comentario } from "../types/Comentario";
 
 interface ModalProps {
   requerimiento: Requerimiento | undefined;
@@ -16,7 +17,11 @@ const ModalDetalleRequerimiento = ({
 }: ModalProps) => {
   const [nuevoComentario, setNuevoComentario] = useState("");
   const [asunto, setAsunto] = useState("");
-  const [archivosAdjuntos, setArchivosAdjuntos] = useState([]);
+  const [comentarios, setComentarios] = useState<Comentario[]>(
+    requerimiento?.comentarios || []
+  );
+  const [archivosAdjuntos, setArchivosAdjuntos] = useState<File[]>([]);
+  const [archivosInput, setArchivosInput] = useState<string[]>([]);
   const [cargarComentario, setCargarComentario] = useState(false);
   const authToken = localStorage.getItem("authToken");
   const userId = localStorage.getItem("userId");
@@ -44,9 +49,9 @@ const ModalDetalleRequerimiento = ({
 
     if (archivosAdjuntos) {
       console.log(archivosAdjuntos);
-      // archivosAdjuntos.map((file) => {
-      //   formData.append(`archivos`, file);
-      // });
+      archivosAdjuntos.forEach((file) => {
+        formData.append(`archivos`, file);
+      });
     }
 
     axios
@@ -61,7 +66,16 @@ const ModalDetalleRequerimiento = ({
           },
         }
       )
-      .then((res) => console.log(res));
+      .then((res) => {
+        setComentarios(
+          [...comentarios, res.data.data].sort(
+            (a, b) => new Date(b.fecha_hora) - new Date(a.fecha_hora)
+          )
+        );
+        setNuevoComentario("");
+        setAsunto("");
+        setArchivosAdjuntos([]);
+      });
   };
 
   return (
@@ -188,7 +202,7 @@ const ModalDetalleRequerimiento = ({
                       ></i>
                     </button>
                   </div>
-
+                  {/* Formulario de comentarios */}
                   <form
                     onSubmit={handleComentarioSubmit}
                     className={`${cargarComentario ? "" : "d-none"} px-2 mb-4`}
@@ -201,6 +215,7 @@ const ModalDetalleRequerimiento = ({
                         type="text"
                         className="form-control"
                         id="asunto"
+                        value={asunto}
                         placeholder="Asunto"
                         required
                         onChange={(e) => setAsunto(e.target.value)}
@@ -213,9 +228,14 @@ const ModalDetalleRequerimiento = ({
                       <input
                         type="file"
                         className="form-control"
+                        value={archivosInput}
                         id="archivos"
                         multiple
-                        onChange={(e) => setArchivosAdjuntos(e.target.value)}
+                        onChange={(e) =>
+                          setArchivosAdjuntos(
+                            Array.from(e.target.files).slice(0, 5)
+                          )
+                        }
                       />
                     </div>
                     <div className="d-flex gap-2">
@@ -225,6 +245,7 @@ const ModalDetalleRequerimiento = ({
                             className="form-control textarea-sm"
                             placeholder="Leave a comment here"
                             id="comentario"
+                            value={nuevoComentario}
                             rows={1}
                             onChange={(e) => setNuevoComentario(e.target.value)}
                           ></textarea>
@@ -239,12 +260,14 @@ const ModalDetalleRequerimiento = ({
                       </button>
                     </div>
                   </form>
-
+                  {/* FIN Formulario de comentarios */}
                   <ul className="list-unstyled lista-botones">
-                    {requerimiento.comentarios &&
-                    requerimiento.comentarios.length ? (
-                      requerimiento.comentarios.map((comentario) => (
-                        <li className="bg-light rounded-pill px-4 fw-bold">
+                    {comentarios && comentarios.length ? (
+                      comentarios.map((comentario) => (
+                        <li
+                          className="bg-light rounded-pill px-4 fw-bold"
+                          key={comentario.id}
+                        >
                           {`${comentario.id} - ${new Date(
                             comentario.fecha_hora
                           ).toLocaleDateString()} ${comentario.asunto}`}
