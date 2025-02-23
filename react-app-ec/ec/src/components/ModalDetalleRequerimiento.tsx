@@ -1,8 +1,10 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Requerimiento } from "../types/Requerimiento";
 import ColoresEstado from "../utils/ColoresEstado";
 import axios from "axios";
-import { Comentario } from "../types/Comentario";
+import { toast } from "react-toastify";
+import { Comentario as ComentarioInterface } from "../types/Comentario";
+import Comentario from "./Comentario";
 
 interface ModalProps {
   requerimiento: Requerimiento | undefined;
@@ -15,17 +17,25 @@ const ModalDetalleRequerimiento = ({
   mostrarModal,
   closeModal,
 }: ModalProps) => {
+  if (requerimiento === undefined) return;
   const [nuevoComentario, setNuevoComentario] = useState("");
   const [asunto, setAsunto] = useState("");
-  const [comentarios, setComentarios] = useState<Comentario[]>(
-    requerimiento?.comentarios || []
+  const [comentarios, setComentarios] = useState<ComentarioInterface[]>(
+    requerimiento.comentarios
   );
+
   const [archivosAdjuntos, setArchivosAdjuntos] = useState<File[]>([]);
-  const [archivosInput, setArchivosInput] = useState<string[]>([]);
   const [cargarComentario, setCargarComentario] = useState(false);
   const authToken = localStorage.getItem("authToken");
   const userId = localStorage.getItem("userId");
-  if (requerimiento === undefined) return;
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return; // Ensure files exist
+
+    const files = Array.from(e.target.files).slice(0, 5);
+    setArchivosAdjuntos(files);
+  };
 
   const handleComentarioSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,7 +84,12 @@ const ModalDetalleRequerimiento = ({
         );
         setNuevoComentario("");
         setAsunto("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
         setArchivosAdjuntos([]);
+        setCargarComentario(false);
+        toast("Comentario cargado exitosamente");
       });
   };
 
@@ -181,10 +196,15 @@ const ModalDetalleRequerimiento = ({
                           className="bg-light rounded-pill px-4 fw-bold"
                           key={index}
                         >
-                          {file}
-                          <button className="btn">
+                          {`${file
+                            .split("/")
+                            .slice(-1)[0]
+                            .split("_")
+                            .slice(1)
+                            .join("_")}`}
+                          <a href={file} target="_blank" className="btn">
                             <i className="bi bi-download"></i>
-                          </button>
+                          </a>
                         </li>
                       ))
                     ) : (
@@ -228,14 +248,13 @@ const ModalDetalleRequerimiento = ({
                       <input
                         type="file"
                         className="form-control"
-                        value={archivosInput}
                         id="archivos"
+                        accept=".xls,.xlsx,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                        .pdf,application/pdf,
+                        .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         multiple
-                        onChange={(e) =>
-                          setArchivosAdjuntos(
-                            Array.from(e.target.files).slice(0, 5)
-                          )
-                        }
+                        onChange={handleFileChange}
+                        ref={fileInputRef}
                       />
                     </div>
                     <div className="d-flex gap-2">
@@ -261,20 +280,10 @@ const ModalDetalleRequerimiento = ({
                     </div>
                   </form>
                   {/* FIN Formulario de comentarios */}
-                  <ul className="list-unstyled lista-botones">
+                  <ul className="list-unstyled gap-3 d-flex flex-column">
                     {comentarios && comentarios.length ? (
                       comentarios.map((comentario) => (
-                        <li
-                          className="bg-light rounded-pill px-4 fw-bold"
-                          key={comentario.id}
-                        >
-                          {`${comentario.id} - ${new Date(
-                            comentario.fecha_hora
-                          ).toLocaleDateString()} ${comentario.asunto}`}
-                          <button className="btn">
-                            <i className="bi bi-eye"></i>
-                          </button>
-                        </li>
+                        <Comentario comentario={comentario} />
                       ))
                     ) : (
                       <p>No hay comentarios para este requerimiento</p>

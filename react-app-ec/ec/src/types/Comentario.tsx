@@ -1,4 +1,5 @@
 export interface Comentario {
+  id: number;
   asunto: string;
   descripcion: string;
   fecha_hora: string;

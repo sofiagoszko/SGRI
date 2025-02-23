@@ -258,6 +258,9 @@ const Nuevo = () => {
                 type="file"
                 id="fileElem"
                 multiple
+                accept=".xls,.xlsx,.csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+          .pdf,application/pdf,
+          .doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 onChange={(e) => {
                   setAdjuntos(Array.from(e.target.files).slice(0, 5));
                 }}
@@ -270,9 +273,13 @@ const Nuevo = () => {
                 Buscar Archivos
               </label>
             </div>
-            <ul id="fileList">
+            <ul id="fileList" className="d-flex flex-column gap-2">
               {adjuntos &&
-                adjuntos.map((file) => <li key={file.id}>{file.name}</li>)}
+                adjuntos.map((file) => (
+                  <li className="w-100 bg-light border list-unstyled px-2 py-2 rounded-3">
+                    {file.name}
+                  </li>
+                ))}
             </ul>
           </div>
 
