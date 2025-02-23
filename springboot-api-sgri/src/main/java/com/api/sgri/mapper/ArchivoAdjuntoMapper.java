@@ -5,11 +5,15 @@ import com.api.sgri.model.ArchivoAdjunto;
 import com.api.sgri.model.Requerimiento;
 import com.api.sgri.repository.RequerimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class ArchivoAdjuntoMapper {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @Autowired
     RequerimientoRepository requerimientoRepository;
@@ -19,9 +23,13 @@ public class ArchivoAdjuntoMapper {
 
         dto.setId(archivoAdjunto.getId());
         dto.setNombre(archivoAdjunto.getNombre());
-        dto.setRuta(archivoAdjunto.getRuta());
+
         dto.setRequerimiento(archivoAdjunto.getRequerimiento().getId());
 
+        String url = String.format("%s/api/requerimiento/%d/archivo/%s",
+                baseUrl, archivoAdjunto.getRequerimiento().getId(), archivoAdjunto.getNombre());
+
+        dto.setRuta(url);
         return dto;
     }
 
@@ -30,7 +38,7 @@ public class ArchivoAdjuntoMapper {
 
         archivoAdjunto.setId(archivoAdjuntoDTO.getId());
         archivoAdjunto.setNombre(archivoAdjuntoDTO.getNombre());
-        archivoAdjunto.setRuta(archivoAdjuntoDTO.getRuta());
+        archivoAdjunto.setRuta("uploads/" + archivoAdjuntoDTO.getNombre());
 
         if (archivoAdjuntoDTO.getRequerimiento() != null) {
             Requerimiento requerimiento = requerimientoRepository.findById(archivoAdjuntoDTO.getRequerimiento())
