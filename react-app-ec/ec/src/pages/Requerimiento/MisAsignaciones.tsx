@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import "./MisAsignaciones.css"; // Importa los estilos CSS
 import { tablePaginationClasses } from "@mui/material";
+import axios from "axios";
 
 const Nuevo = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -86,6 +87,13 @@ const Nuevo = () => {
       categoriaTipo: "Hardware",
     },
   ]);
+
+  useEffect(() => {
+    axios.get(`${import.meta.env.VITE_API_URL}/requerimiento/requerimientos`).then(res =>
+    {}
+    )
+  })
+
   const requerimientosFiltrados = requerimientos.filter((req) => {
     const filtroCategoria = filtros.categoriaTipo === "" || req.categoriaTipo === filtros.categoriaTipo;
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;

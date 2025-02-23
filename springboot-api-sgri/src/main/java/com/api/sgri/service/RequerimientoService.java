@@ -86,6 +86,12 @@ public class RequerimientoService {
         return requerimiento;
     }
 
+    public List<RequerimientoDTO> obtenerRequerimientosPorIdUsuario(Long id) throws NotFoundException {
+        return requerimientoRepository.findByUsuarioDestinatario_Id(id).stream()
+        .map(requerimientoMapper::toDTO)
+        .collect(Collectors.toList());
+    }
+
     public RequerimientoDTO updateRequerimiento(Requerimiento requerimiento, RequerimientoDTO requerimientoDTO) throws NotFoundException {
         requerimiento.setAsunto(requerimientoDTO.getAsunto());
         requerimiento.setDescripcion(requerimientoDTO.getDescripcion());

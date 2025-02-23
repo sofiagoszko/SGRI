@@ -4,6 +4,7 @@ import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
 import "./Layout.css";
 import imagenPerfil from "../SERGI_fondo_blanco.jpeg";
+import { ToastContainer } from 'react-toastify';
 
 function Layout({ children }) {
   return (
@@ -12,7 +13,9 @@ function Layout({ children }) {
         <UserCard />
         <NavCard />
       </header>
-      <main className="d-flex flex-column flex-grow-1">{children}</main>
+      <main className="d-flex flex-column flex-grow-1">{children}
+      <ToastContainer aria-label="toast"/>
+      </main>
     </>
   );
 }

@@ -3,9 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import "./Nuevo.css"; // Importa los estilos CSS
 import axios from "axios";
+import {toast} from "react-toastify";
 const authToken = localStorage.getItem("authToken") || "";
 
 const Nuevo = () => {
+  const navigate = useNavigate();
   const [tipos, setTipos] = useState([]);
   const [tipo, setTipo] = useState();
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState();
@@ -49,7 +51,9 @@ const Nuevo = () => {
     "usuarioEmisor": 1,
     "usuarioDestinatario": 2
 } */
-    const codigoGenerado = `${tipo}_${new Date().getFullYear()}_${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+    const tipoSeleccionado = tipos.find((tipoSel) => tipoSel.id == tipo);
+    console.log(tipoSeleccionado);
+    const codigoGenerado = `${tipoSeleccionado?.codigo}_${new Date().getFullYear()}_${Math.floor(1000000000 + Math.random() * 9000000000)}`;
     const formData = new FormData();
     formData.append("datos", 
       new Blob(
@@ -78,6 +82,9 @@ const Nuevo = () => {
           Authorization: `Bearer ${authToken}`
         },
         body: formData
+      }).then(res => {
+        toast("Requerimiento creado con exito");
+        setTimeout(() => navigate('/home'), 3000);
       })
   };
   return (
@@ -187,8 +194,7 @@ const Nuevo = () => {
               />
             </div>
           </div>
-
-          <div className="col-12 col-md-5 d-none">
+          <div className="col-12 col-md-5">
             <div className="form-group">
               <label htmlFor="requerimiento">Requerimiento Relacionado</label>
               <select

@@ -101,6 +101,24 @@ public class RequerimientoController {
         }
     }
 
+    
+    @GetMapping("/requerimientos/usuario-destinatario/{id}")
+    public ResponseEntity<Object> getRequerimientoByUsuarioDestinatario(@PathVariable Long id) {
+        try {
+
+            List<RequerimientoDTO> requerimientos = requerimientoService.obtenerRequerimientosPorIdUsuario(id);
+            HttpBodyResponse data = new HttpBodyResponse.Builder()
+                    .message("Requerimientos obtenidos con éxito")
+                    .status("Success")
+                    .statusCode(200)
+                    .data(requerimientos)
+                    .build();
+            return ResponseEntity.status(data.getStatusCode()).body(data);
+        } catch (Exception e) {
+            return responseFactory.internalServerError();
+        }
+    }
+
     @PutMapping("/requerimientos/{id}")
     public ResponseEntity<Object> updateRequerimiento(@PathVariable Long id, @RequestBody RequerimientoDTO requerimientoDTO) {
         try {
