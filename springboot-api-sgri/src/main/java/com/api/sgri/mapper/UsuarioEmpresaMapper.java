@@ -18,7 +18,7 @@ public class UsuarioEmpresaMapper {
         dto.setNombre(usuarioEmpresa.getNombre());
         dto.setApellido(usuarioEmpresa.getApellido());
         dto.setEmail(usuarioEmpresa.getEmail());
-        dto.setPassword(usuarioEmpresa.getPassword());
+        //dto.setPassword(usuarioEmpresa.getPassword());
         dto.setUserName(usuarioEmpresa.getUserName());
         dto.setLegajo(usuarioEmpresa.getLegajo());
         dto.setCargo(usuarioEmpresa.getCargo());
@@ -35,7 +35,7 @@ public class UsuarioEmpresaMapper {
         usuarioEmpresa.setNombre(dto.getNombre());
         usuarioEmpresa.setApellido(dto.getApellido());
         usuarioEmpresa.setEmail(dto.getEmail());
-        usuarioEmpresa.setPassword(dto.getPassword());
+        //usuarioEmpresa.setPassword(dto.getPassword());
         usuarioEmpresa.setUserName(dto.getUserName());
         usuarioEmpresa.setLegajo(dto.getLegajo());
         usuarioEmpresa.setCargo(dto.getCargo());

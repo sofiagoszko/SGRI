@@ -38,11 +38,11 @@ public class UsuarioEmpresaService {
     @Value("${ruta.archivos}")
     private String rutaArchivos;
 
-    public UsuarioEmpresa crearUsuarioEmpresa(UsuarioEmpresaDTO usuarioEmpresaDTO) throws Exception {
+    public UsuarioEmpresa crearUsuarioEmpresa(UsuarioEmpresa usuarioEmpresa) throws Exception {
       
-        Boolean existUsuarioEmpresaWithSameEmail = usuarioEmpresaRepository.existsByEmail(usuarioEmpresaDTO.getEmail());
-        Boolean existUsuarioEmpresaWithSameUserName = usuarioEmpresaRepository.existsByUserName(usuarioEmpresaDTO.getUserName());
-        Boolean existUsuarioEmpresaWithSameLegajo= usuarioEmpresaRepository.existsByLegajo(usuarioEmpresaDTO.getLegajo());
+        Boolean existUsuarioEmpresaWithSameEmail = usuarioEmpresaRepository.existsByEmail(usuarioEmpresa.getEmail());
+        Boolean existUsuarioEmpresaWithSameUserName = usuarioEmpresaRepository.existsByUserName(usuarioEmpresa.getUserName());
+        Boolean existUsuarioEmpresaWithSameLegajo= usuarioEmpresaRepository.existsByLegajo(usuarioEmpresa.getLegajo());
 
         if (existUsuarioEmpresaWithSameEmail || existUsuarioEmpresaWithSameUserName || existUsuarioEmpresaWithSameLegajo) {
             throw new DuplicateUserException("Nombre de usuario, email o legajo duplicado");
@@ -50,19 +50,20 @@ public class UsuarioEmpresaService {
 
         //UsuarioEmpresa usuarioEmpresa = usuarioEmpresaMapper.fromDTO(usuarioEmpresaDTO);
 
-        String hashedPassword = passwordEncoder.encode(usuarioEmpresaDTO.getPassword());
+        String hashedPassword = passwordEncoder.encode(usuarioEmpresa.getPassword());
 
-            UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa(
-            usuarioEmpresaDTO.getNombre(),
-            usuarioEmpresaDTO.getApellido(),
-            usuarioEmpresaDTO.getEmail(),
-            //usuarioEmpresaDTO.getPassword(),
-            hashedPassword,
-            usuarioEmpresaDTO.getUserName(),
-            usuarioEmpresaDTO.getLegajo(),
-            usuarioEmpresaDTO.getCargo(),
-            usuarioEmpresaDTO.getDepartamento()
-        );
+//            UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa(
+//            usuarioEmpresaDTO.getNombre(),
+//            usuarioEmpresaDTO.getApellido(),
+//            usuarioEmpresaDTO.getEmail(),
+//            //usuarioEmpresaDTO.getPassword(),
+//            hashedPassword,
+//            usuarioEmpresaDTO.getUserName(),
+//            usuarioEmpresaDTO.getLegajo(),
+//            usuarioEmpresaDTO.getCargo(),
+//            usuarioEmpresaDTO.getDepartamento()
+//        );
+        usuarioEmpresa.setPassword(hashedPassword);
 
         usuarioEmpresaRepository.save(usuarioEmpresa);
         return usuarioEmpresa;
@@ -73,7 +74,7 @@ public class UsuarioEmpresaService {
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
     }
 
-    public UsuarioEmpresaDTO updateUsuarioEmpresa(UsuarioEmpresa usuarioEmpresa, UsuarioEmpresaDTO usuarioEmpresaDTO) throws Exception {
+    public UsuarioEmpresaDTO updateUsuarioEmpresa(UsuarioEmpresa usuarioEmpresa, UsuarioEmpresaDTO usuarioEmpresaDTO, String password) throws Exception {
         Boolean existUsuarioEmpresaWithSameEmail = usuarioEmpresaRepository.existsByEmail(usuarioEmpresaDTO.getEmail())
                 && !usuarioEmpresa.getEmail().equals(usuarioEmpresaDTO.getEmail());
         Boolean existUsuarioEmpresaWithSameUserName = usuarioEmpresaRepository.existsByUserName(usuarioEmpresaDTO.getUserName())
@@ -92,8 +93,8 @@ public class UsuarioEmpresaService {
         usuarioEmpresa.setCargo(usuarioEmpresaDTO.getCargo());
         usuarioEmpresa.setDepartamento(usuarioEmpresaDTO.getDepartamento());
 
-        if (usuarioEmpresaDTO.getPassword() != null && !usuarioEmpresaDTO.getPassword().isEmpty()) {
-            usuarioEmpresa.setPassword(passwordEncoder.encode(usuarioEmpresaDTO.getPassword()));
+        if (password != null && !password.isEmpty()) {
+            usuarioEmpresa.setPassword(passwordEncoder.encode(password));
         }
 
         usuarioEmpresaRepository.save(usuarioEmpresa);
