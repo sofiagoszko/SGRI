@@ -136,7 +136,7 @@ public class ComentarioController {
             Requerimiento requerimiento = requerimientoService.obtenerRequerimientoPorId(id);
             Comentario comentario = comentarioService.crearComentario(comentarioDTO, requerimiento, archivos);
 
-            ComentarioDTO2 comentarioDTORespuesta = comentarioMapper.toDTO(comentario);
+            ComentarioDTO comentarioDTORespuesta = comentarioMapper2.toDTO(comentario);
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Se ha creado el comentario")
