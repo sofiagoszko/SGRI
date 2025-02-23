@@ -3,6 +3,7 @@ import { TipoRequerimiento } from "./TipoRequerimiento";
 import { Comentario } from "./Comentario";
 
 export interface Requerimiento {
+  id: number;
   archivosAdjuntos: string[];
   codigo: string;
   estado: string;

@@ -75,7 +75,7 @@ const Nuevo = () => {
     );
     if (adjuntos)
       adjuntos.forEach((file, index) => {
-        formData.append(`archivos[${index}]`, file);
+        formData.append(`archivos`, file);
       });
 
     fetch(`${import.meta.env.VITE_API_URL}/requerimiento/nuevo`, {
