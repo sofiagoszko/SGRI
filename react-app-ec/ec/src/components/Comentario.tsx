@@ -16,7 +16,7 @@ const Comentario = ({ comentario }: ComentarioProps) => {
     >
       <div className="d-flex items-center justify-content-between w-100">
         <p className="mb-0 fw-semibold">
-          {`${comentario.id} - ${new Date(
+          {`${comentario.usuarioEmisorComentario.userName} - ${new Date(
             comentario.fecha_hora
           ).toLocaleDateString()} ${comentario.asunto}`}
         </p>
