@@ -29,19 +29,6 @@ public class ArchivoAdjuntoService {
     private ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
 
-
-    //    public String guardarArchivo(MultipartFile archivo) throws IOException {
-//        String rutaArchivo = directorioArchivos + File.separator + archivo.getOriginalFilename();
-//
-//        File destino = new File(rutaArchivo);
-//
-//        destino.getParentFile().mkdirs();
-//
-//        archivo.transferTo(destino);
-//
-//        return destino.getAbsolutePath(); // Devolver la ruta completa
-//    }
-
     public String guardarArchivo(MultipartFile archivo) throws IOException {
 
         String contentType = archivo.getContentType();

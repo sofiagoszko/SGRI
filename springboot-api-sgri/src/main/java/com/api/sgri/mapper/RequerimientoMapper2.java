@@ -60,8 +60,9 @@ public class RequerimientoMapper2 {
 
 
         if (requerimiento.getArchivosAdjuntos() != null) {
+            String baseUrl = "http://localhost:8080/api/requerimiento/requerimientos/" + requerimiento.getId() + "/archivo/";
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                    .map(archivoAdjunto -> archivoAdjunto.getNombre())
+                    .map(archivoAdjunto -> baseUrl + archivoAdjunto.getNombre())
                     .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }
