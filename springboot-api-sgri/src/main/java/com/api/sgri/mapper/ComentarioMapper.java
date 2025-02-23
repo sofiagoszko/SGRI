@@ -44,7 +44,7 @@ public class ComentarioMapper {
         dto.setAsunto(comentario.getAsunto());
         dto.setDescripcion(comentario.getDescripcion());
         dto.setFecha_hora(comentario.getFecha_hora());
-        dto.setUsuarioEmisorComentario(comentario.getUsuarioEmisorComentario().getId());
+        dto.setUsuarioEmisorComentario(usuarioEmpresaMapper.toDTO(comentario.getUsuarioEmisorComentario()));
         dto.setRequerimiento(comentario.getRequerimiento().getId());
         // Mapear archivos adjuntos de Comentario
         if (comentario.getArchivosComentario() != null) {
@@ -68,7 +68,7 @@ public class ComentarioMapper {
         comentario.setAsunto(dto.getAsunto());
         comentario.setDescripcion(dto.getDescripcion());
         comentario.setFecha_hora(dto.getFecha_hora());
-        comentario.setUsuarioEmisorComentario(usuarioEmpresaMapper.fromDTO(usuarioEmpresaService.getUsuarioEmpresaById(dto.getUsuarioEmisorComentario())));
+        comentario.setUsuarioEmisorComentario(usuarioEmpresaMapper.fromDTO(dto.getUsuarioEmisorComentario()));
         // Mapear archivos adjuntos de ComentarioDTO a Comentario
         if (dto.getArchivosComentario() != null) {
             List<ArchivoComentario> archivosComentario = new ArrayList<>();
