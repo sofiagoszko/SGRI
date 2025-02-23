@@ -1,15 +1,84 @@
-import React, { useState, useEffect } from "react";
-import { useAuth } from "../../utils/AuthContext.jsx";
+import React, { useState, useEffect, FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import "./Nuevo.css"; // Importa los estilos CSS
+import axios from "axios";
+const authToken = localStorage.getItem("authToken") || "";
 
 const Nuevo = () => {
-  const navigate = useNavigate();
-  const handleSubmit = (e: any) => {
+  const [tipos, setTipos] = useState([]);
+  const [tipo, setTipo] = useState();
+  const [categoriasSeleccionables, setCategoriasSeleccionables] = useState();
+  const [usuarios, setUsuarios] = useState();
+  const [destinatario, setDestinatario] = useState(0);
+  const [prioridad, setPrioridad] = useState("");
+  const [asunto, setAsunto] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [categoria, setCategoria] = useState();
+  const [adjuntos, setAdjuntos] = useState<File[]>();
+
+  useEffect(() => {
+    if(authToken){
+    axios.get(`${import.meta.env.VITE_API_URL}/tipo-requerimiento/tipos`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    }).then(res => {
+      setTipos(res.data);
+    })}
+    axios.get(`${import.meta.env.VITE_API_URL}/usuario-empresa/usuarios`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`
+      }
+    }).then(res => {
+      setUsuarios(res.data.data);
+    })
+  }, [])
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("casa");
-    navigate("/home");
+
+    /*{
+    "estado": "Pendiente",
+    "prioridad": "Media",
+    "fechaHora": "2025-02-08T12:30:00",
+    "asunto": "love",
+    "descripcion": "emily",
+    "codigo": "R",
+    "categoriaTipo": "V",
+    "tipoRequerimiento": 1,
+    "usuarioEmisor": 1,
+    "usuarioDestinatario": 2
+} */
+    const codigoGenerado = `${tipo}_${new Date().getFullYear()}_${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+    const formData = new FormData();
+    formData.append("datos", 
+      new Blob(
+        [JSON.stringify({
+          estado: destinatario ? "Asignado" : "Abierto",
+          prioridad,
+          fechaHora: new Date().toISOString().split('.')[0],
+          asunto,
+          descripcion,
+          codigo: codigoGenerado,
+          categoriaTipo: categoria,
+          tipoRequerimiento: tipo,
+          usuarioEmisor: 1,
+          usuarioDestinatario: parseInt(destinatario)
+        })],
+        {type: "application/json"}
+      ));
+    if(adjuntos)
+      adjuntos.forEach((file, index) => {
+        formData.append(`archivos[${index}]`, file);
+      });
+
+      fetch(`${import.meta.env.VITE_API_URL}/requerimiento/nuevo`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        },
+        body: formData
+      })
   };
   return (
     <Layout>
@@ -21,17 +90,43 @@ const Nuevo = () => {
         >
           <div className="col-12 col-md-5">
             <div className="form-group">
+              <label htmlFor="tipo">
+                Tipo <span className="text-danger">*</span>
+              </label>
+              <select className="form-control" id="tipo" name="tipo" required onChange={(e) => {
+                let tipoSeleccionado = tipos.find((tipo) => tipo.id == e.target.value);
+                if(tipoSeleccionado){
+                  console.log(tipoSeleccionado);
+                setTipo(tipoSeleccionado?.id);
+                setCategoriasSeleccionables(tipoSeleccionado?.categorias);
+                }
+                }}>
+                <option value="" selected hidden>
+                  Tipo
+                </option>
+                {tipos.map((tipo) => (
+                  <option value={tipo?.id || ""}>
+                    {tipo?.codigo || ""}
+                  </option>
+                  )
+                )}
+              </select>
+            </div>
+          </div>
+          <div className="col-12 col-md-5">
+            <div className="form-group">
               <label htmlFor="categoria">
                 Categoría <span className="text-danger">*</span>
               </label>
-              <select className="form-control" id="categoria" required>
+              <select className="form-control" id="categoria" required disabled={!tipo} onChange={(e) => setCategoria(e.target.value)}>
                 <option value="" selected hidden>
                   Categoría
                 </option>
-                <option>Hardware</option>
-                <option>Software</option>
-                <option>Red</option>
-                <option>Seguridad</option>
+                {categoriasSeleccionables && categoriasSeleccionables.map((cat) => (
+                  <option value={cat.descripcion}>
+                  {cat.descripcion}
+                </option>
+                ))}
               </select>
             </div>
           </div>
@@ -46,45 +141,33 @@ const Nuevo = () => {
                 id="prioridad"
                 name="prioridad"
                 required
+                onChange={(e) => setPrioridad(e.target.value)}
               >
                 <option value="" selected hidden>
                   Prioridad
                 </option>
-                <option>Baja</option>
-                <option>Media</option>
-                <option>Alta</option>
-                <option>Urgente</option>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+                <option value="Urgente">Urgente</option>
               </select>
             </div>
           </div>
 
-          <div className="col-12 col-md-5">
-            <div className="form-group">
-              <label htmlFor="tipo">
-                Tipo <span className="text-danger">*</span>
-              </label>
-              <select className="form-control" id="tipo" name="tipo" required>
-                <option value="" selected hidden>
-                  Tipo
-                </option>
-                <option value="REH">REH</option>
-                <option value="ERR">ERR</option>
-                <option value="GOP">GOP</option>
-              </select>
-            </div>
-          </div>
+          
 
           <div className="col-12 col-md-5">
             <div className="form-group">
               <label htmlFor="destinatario">Destinatario</label>
-              <select className="form-control" id="destinatario">
+              <select className="form-control" id="destinatario" onChange={(e) => setDestinatario(e.target.value)}>
                 <option value="" selected hidden>
                   Destinatario
                 </option>
-                <option>Silvia Romero</option>
-                <option>Aldo Fleitas</option>
-                <option>Sofia Goszko</option>
-                <option>Sebastian Merlino</option>
+                {usuarios && usuarios.map((user) => (
+                  <option value={user.id}>
+                  {`${user.nombre} ${user.apellido}`}
+                </option>
+                ))}
               </select>
             </div>
           </div>
@@ -100,11 +183,12 @@ const Nuevo = () => {
                 id="asunto"
                 placeholder="Asunto"
                 required
+                onChange={(e) => setAsunto(e.target.value)}
               />
             </div>
           </div>
 
-          <div className="col-12 col-md-5">
+          <div className="col-12 col-md-5 d-none">
             <div className="form-group">
               <label htmlFor="requerimiento">Requerimiento Relacionado</label>
               <select
@@ -131,6 +215,7 @@ const Nuevo = () => {
                   className="form-control textarea-lg"
                   placeholder="Leave a comment here"
                   id="floatingTextarea"
+                  onChange={(e) => setDescripcion(e.target.value)}
                 ></textarea>
                 <label htmlFor="floatingTextarea">Descripción</label>
               </div>
@@ -145,16 +230,18 @@ const Nuevo = () => {
               <p className="m-0">
                 <i className="bi bi-cloud-upload bi-lg"></i>
               </p>
-              <input type="file" id="fileElem" multiple />
+              <input type="file" id="fileElem" multiple onChange={(e) => {
+                setAdjuntos(Array.from(e.target.files).slice(0, 5));
+              }}/>
               <label
                 htmlFor="fileElem"
                 id="upload-btn"
                 className="btn fw-semibold"
               >
                 Buscar Archivos
-              </label>
-              <ul id="fileList"></ul>
+              </label>  
             </div>
+              <ul id="fileList">{adjuntos && adjuntos.map((file) => (<li>{file.name}</li>))}</ul>
           </div>
 
           <div className="d-flex justify-content-around mb-5">
