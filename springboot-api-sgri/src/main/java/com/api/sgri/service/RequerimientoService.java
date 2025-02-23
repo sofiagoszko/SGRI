@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+import com.api.sgri.dto.RequerimientoDTO2;
+import com.api.sgri.mapper.RequerimientoMapper2;
 import com.api.sgri.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,6 +40,10 @@ public class RequerimientoService {
 
     @Autowired
     private RequerimientoMapper requerimientoMapper;
+
+
+    @Autowired
+    private RequerimientoMapper2 requerimientoMapper2;
 
     @Autowired
     private ArchivoAdjuntoService archivoAdjuntoService;
@@ -74,6 +80,12 @@ public class RequerimientoService {
         return requerimientoRepository.save(requerimiento);
     }
 
+    public List<RequerimientoDTO2> obtenerRequerimientos2() {
+        return requerimientoRepository.findAll().stream()
+                .map(requerimientoMapper2::toDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<RequerimientoDTO> obtenerRequerimientos() {
         return requerimientoRepository.findAll().stream()
                 .map(requerimientoMapper::toDTO)
@@ -92,10 +104,23 @@ public class RequerimientoService {
         .collect(Collectors.toList());
     }
 
+    public List<RequerimientoDTO2> obtenerRequerimientosPorIdUsuario2(Long id) throws NotFoundException {
+        return requerimientoRepository.findByUsuarioDestinatario_Id(id).stream()
+                .map(requerimientoMapper2::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
     public List<RequerimientoDTO> obtenerRequerimientosPorIdUsuarioEmisor(Long id) throws NotFoundException {
         return requerimientoRepository.findByUsuarioEmisor_Id(id).stream()
         .map(requerimientoMapper::toDTO)
         .collect(Collectors.toList());
+    }
+
+    public List<RequerimientoDTO2> obtenerRequerimientosPorIdUsuarioEmisor2(Long id) throws NotFoundException {
+        return requerimientoRepository.findByUsuarioEmisor_Id(id).stream()
+                .map(requerimientoMapper2::toDTO)
+                .collect(Collectors.toList());
     }
 
     public RequerimientoDTO updateRequerimiento(Requerimiento requerimiento, RequerimientoDTO requerimientoDTO) throws NotFoundException {

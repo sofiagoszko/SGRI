@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.api.sgri.dto.RequerimientoDTO2;
+import com.api.sgri.mapper.RequerimientoMapper2;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 
 
@@ -50,6 +50,8 @@ public class RequerimientoController {
     @Autowired
     private RequerimientoMapper requerimientoMapper;
     @Autowired
+    private RequerimientoMapper2 requerimientoMapper2;
+    @Autowired
     private ArchivoAdjuntoService archivoAdjuntoService;
     @Autowired
     private ArchivoAdjuntoMapper archivoAdjuntoMapper;
@@ -64,8 +66,7 @@ public class RequerimientoController {
     @GetMapping("/requerimientos")
     public ResponseEntity<Object> getRequerimientos(@RequestParam(required = false) String param) {
         try {
-
-            List<RequerimientoDTO> requerimientos = requerimientoService.obtenerRequerimientos();
+            List<RequerimientoDTO2> requerimientos= requerimientoService.obtenerRequerimientos2();
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Requerimientos obtenidos con éxito")
@@ -84,7 +85,7 @@ public class RequerimientoController {
         try {
 
             Requerimiento requerimiento = requerimientoService.obtenerRequerimientoPorId(id);
-            RequerimientoDTO requerimientoDTO = requerimientoMapper.toDTO(requerimiento);
+            RequerimientoDTO2 requerimientoDTO = requerimientoMapper2.toDTO(requerimiento);
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Requerimiento obtenido con éxito")
@@ -106,7 +107,7 @@ public class RequerimientoController {
     public ResponseEntity<Object> getRequerimientoByUsuarioDestinatario(@PathVariable Long id) {
         try {
 
-            List<RequerimientoDTO> requerimientos = requerimientoService.obtenerRequerimientosPorIdUsuario(id);
+            List<RequerimientoDTO2> requerimientos = requerimientoService.obtenerRequerimientosPorIdUsuario2(id);
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Requerimientos obtenidos con éxito")
                     .status("Success")
@@ -123,7 +124,7 @@ public class RequerimientoController {
     public ResponseEntity<Object> getRequerimientoByUsuarioEmisor(@PathVariable Long id) {
         try {
 
-            List<RequerimientoDTO> requerimientos = requerimientoService.obtenerRequerimientosPorIdUsuarioEmisor(id);
+            List<RequerimientoDTO2> requerimientos = requerimientoService.obtenerRequerimientosPorIdUsuarioEmisor2(id);
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Requerimientos obtenidos con éxito")
                     .status("Success")
