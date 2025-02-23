@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.util.List;
 
 
-
+import com.api.sgri.dto.ComentarioDTO2;
 import com.api.sgri.mapper.ArchivoComentarioMapper;
 
+import com.api.sgri.mapper.ComentarioMapper2;
 import com.api.sgri.model.ArchivoAdjunto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -47,6 +48,9 @@ public class ComentarioController {
     private ComentarioMapper comentarioMapper;
 
     @Autowired
+    private ComentarioMapper2 comentarioMapper2;
+
+    @Autowired
     private RequerimientoService requerimientoService;
 
     @Autowired
@@ -64,7 +68,7 @@ public class ComentarioController {
         try{
             Comentario comentario = comentarioService.getComentarioById(id);
 
-            ComentarioDTO comentarioDTO = comentarioMapper.toDTO(comentario);
+            ComentarioDTO comentarioDTO = comentarioMapper2.toDTO(comentario);
 
             // Crear la respuesta
             HttpBodyResponse data = new HttpBodyResponse.Builder()
@@ -86,7 +90,7 @@ public class ComentarioController {
             List<Comentario> comentarios = comentarioService.getComentariosByRequerimiento(id);
 
             List<ComentarioDTO> comentariosDTO = comentarios.stream()
-                    .map(comentarioMapper::toDTO)
+                    .map(comentarioMapper2::toDTO)
                     .toList();
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
@@ -108,7 +112,7 @@ public class ComentarioController {
             List<Comentario> comentarios = comentarioService.getComentariosByUsuarioEmisor(id);
 
             List<ComentarioDTO> comentariosDTO = comentarios.stream()
-                    .map(comentarioMapper::toDTO)
+                    .map(comentarioMapper2::toDTO)
                     .toList();
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
@@ -126,13 +130,13 @@ public class ComentarioController {
 
     @PostMapping(value="{id}/comentario", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> createComentario(@PathVariable Long id,
-                                                   @RequestPart("datos") ComentarioDTO comentarioDTO,
+                                                   @RequestPart("datos") ComentarioDTO2 comentarioDTO,
                                                    @RequestPart(value = "archivos", required = false) List<MultipartFile> archivos) throws NotFoundException {
         try{
             Requerimiento requerimiento = requerimientoService.obtenerRequerimientoPorId(id);
             Comentario comentario = comentarioService.crearComentario(comentarioDTO, requerimiento, archivos);
 
-            ComentarioDTO comentarioDTORespuesta = comentarioMapper.toDTO(comentario);
+            ComentarioDTO2 comentarioDTORespuesta = comentarioMapper.toDTO(comentario);
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Se ha creado el comentario")

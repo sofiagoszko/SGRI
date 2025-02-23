@@ -25,6 +25,8 @@ public class RequerimientoMapper {
 
     @Autowired
     private ComentarioMapper comentarioMapper;
+    @Autowired
+    private ComentarioMapper2 comentarioMapper2;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -53,7 +55,7 @@ public class RequerimientoMapper {
 
         if (requerimiento.getComentarios() != null) {
             dto.setComentarios(requerimiento.getComentarios().stream()
-                .map(comentarioMapper::toDTO)
+                .map(comentarioMapper2::toDTO)
                 .collect(Collectors.toList()));
         }else {
             requerimiento.setComentarios(new ArrayList<>());
@@ -95,7 +97,7 @@ public class RequerimientoMapper {
             List<Comentario> comentarios = new ArrayList<>();
             for (ComentarioDTO comentarioDTO : dto.getComentarios()) {
                 try {
-                    comentarios.add(comentarioMapper.fromDTO(comentarioDTO));
+                    comentarios.add(comentarioMapper2.fromDTO(comentarioDTO));
                 } catch (NotFoundException e) {
                     e.printStackTrace();
                 }

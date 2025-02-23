@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import com.api.sgri.dto.ComentarioDTO2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,7 @@ public class ComentarioService {
     @Autowired
     private ComentarioMapper comentarioMapper;
 
-    public Comentario crearComentario(ComentarioDTO comentarioDTO, Requerimiento requerimiento, List<MultipartFile> archivos) throws Exception {
+    public Comentario crearComentario(ComentarioDTO2 comentarioDTO, Requerimiento requerimiento, List<MultipartFile> archivos) throws Exception {
         try{
             Comentario comentario = comentarioMapper.fromDTO(comentarioDTO);
             comentario.setRequerimiento(requerimiento);
