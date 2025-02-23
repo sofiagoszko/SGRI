@@ -64,13 +64,12 @@ public class RequerimientoMapper2 {
 
 
         if (requerimiento.getArchivosAdjuntos() != null) {
-            String url = baseUrl+"/api/requerimiento/requerimientos/" + requerimiento.getId() + "/archivo/";
+            String url = baseUrl+"/api/requerimiento/archivoAdjunto/";
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()
-                    .map(archivoAdjunto -> url + archivoAdjunto.getNombre())
+                    .map(archivoAdjunto -> url + archivoAdjunto.getRuta())
                     .collect(Collectors.toList());
             dto.setArchivosAdjuntos(archivosAdjuntos);
         }
-
         return dto;
     }
 

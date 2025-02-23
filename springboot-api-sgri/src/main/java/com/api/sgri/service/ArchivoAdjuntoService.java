@@ -96,10 +96,10 @@ public class ArchivoAdjuntoService {
         return archivoAdjunto;
     }
 
-    public ArchivoAdjunto findByNombre(String nombreArchivo) throws NotFoundException {
-        ArchivoAdjunto archivo = archivoAdjuntoRepository.findByNombre(nombreArchivo);
+    public ArchivoAdjunto findByNombre(String ruta) throws NotFoundException {
+        ArchivoAdjunto archivo = archivoAdjuntoRepository.findByRuta(ruta);
         if(archivo == null){
-            throw new NotFoundException("Archivo no encontrado con el nombre " + nombreArchivo);
+            throw new NotFoundException("Archivo no encontrado con la ruta " + ruta);
         }
         return archivo;
     }

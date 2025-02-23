@@ -187,7 +187,8 @@ public class RequerimientoController {
     @GetMapping("/archivoAdjunto/{nombreArchivo}")
     public ResponseEntity<Resource> mostrarArchivo(@PathVariable String nombreArchivo) throws IOException, NotFoundException {
 
-        ArchivoAdjunto archivoAdjunto = archivoAdjuntoService.findByNombre(nombreArchivo);
+        String decodedFileName = java.net.URLDecoder.decode(nombreArchivo, "UTF-8");
+        ArchivoAdjunto archivoAdjunto = archivoAdjuntoService.findByNombre(decodedFileName);
 
         if (archivoAdjunto == null) {
             return ResponseEntity.notFound().build();

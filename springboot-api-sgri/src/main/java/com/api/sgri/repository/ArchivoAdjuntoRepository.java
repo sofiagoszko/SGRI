@@ -10,5 +10,5 @@ public interface ArchivoAdjuntoRepository extends JpaRepository<ArchivoAdjunto, 
 
     List<ArchivoAdjunto> nombre(String nombre);
 
-    ArchivoAdjunto findByNombre(String nombre);
+    ArchivoAdjunto findByRuta(String ruta);
 }
