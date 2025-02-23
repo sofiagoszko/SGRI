@@ -1,25 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../utils/AuthContext.jsx";
-//import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout.js";
 import "./MisAsignaciones.css";
 import axios from "axios";
 import { Requerimiento } from "../../types/Requerimiento.js";
 import ColoresEstado from "../../utils/ColoresEstado";
-
-interface TipoRequerimiento {
-  id: number;
-  codigo: string;
-  descripcion: string;
-}
-
-interface UsuarioDestinatario {
-  id: number;
-  userName: string;
-}
+import ModalDetalleRequerimiento from "../../components/ModalDetalleRequerimiento.js";
 
 const ExplorarSolicitudes = () => {
   const authToken = localStorage.getItem("authToken");
+  const [reqSeleccionado, setReqSeleccionado] = useState<
+    Requerimiento | undefined
+  >(undefined);
   const [tipos, setTipos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
@@ -73,7 +64,6 @@ const ExplorarSolicitudes = () => {
           },
         })
         .then((res) => {
-          console.log(res);
           setUsuarios(res.data.data);
         });
 
@@ -96,17 +86,18 @@ const ExplorarSolicitudes = () => {
 
     const filtroCategoria =
       filtros.categoriaTipo === "" ||
-      req.categoriaTipo == categoriaSeleccionada.descripcion;
+      (categoriaSeleccionada &&
+        req.categoriaTipo == categoriaSeleccionada.descripcion);
 
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
 
     const filtroTipo =
       filtros.tipoRequerimiento === "" ||
-      req.tipoRequerimiento == filtros.tipoRequerimiento;
+      req.tipoRequerimiento.id == filtros.tipoRequerimiento;
 
     const filtroUsuario =
       filtros.usuarioDestinatario === "" ||
-      req.usuarioDestinatario == filtros.usuarioDestinatario;
+      req.usuarioDestinatario.id == filtros.usuarioDestinatario;
 
     const filtroDesde =
       !filtros.fechaDesde ||
@@ -125,10 +116,12 @@ const ExplorarSolicitudes = () => {
       filtroHasta
     );
   });
-  const showModal = () => {
+  const showModal = (requerimiento: Requerimiento) => {
+    setReqSeleccionado(requerimiento);
     setMostrarModal(true);
   };
   const closeModal = () => {
+    setReqSeleccionado(undefined);
     setMostrarModal(false);
   };
 
@@ -287,7 +280,7 @@ const ExplorarSolicitudes = () => {
                   <td scope="col">
                     <div className="d-flex gap-2 align-items-center">
                       {req.codigo}
-                      <button className="btn" onClick={showModal}>
+                      <button className="btn" onClick={() => showModal(req)}>
                         <i className="bi bi-eye"></i>
                       </button>
                     </div>
@@ -301,11 +294,10 @@ const ExplorarSolicitudes = () => {
                     </span>
                   </td>
                   <td scope="col" className="align-middle">
-                    {tipos[req.tipoRequerimiento]?.codigo || "Cargando..."}
+                    {req.tipoRequerimiento.codigo}
                   </td>
                   <td scope="col" className="align-middle">
-                    {usuariosDestinatarios[req.usuarioDestinatario]?.userName ||
-                      "Cargando..."}
+                    {`${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}`}
                   </td>
                   <td scope="col" className="align-middle">
                     {new Date(req.fechaHora).toLocaleDateString()}
@@ -366,6 +358,11 @@ const ExplorarSolicitudes = () => {
           </ul>
         </div>
       </section>
+      <ModalDetalleRequerimiento
+        requerimiento={reqSeleccionado}
+        mostrarModal={mostrarModal}
+        closeModal={closeModal}
+      />
     </Layout>
   );
 };

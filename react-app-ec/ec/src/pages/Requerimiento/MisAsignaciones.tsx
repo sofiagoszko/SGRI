@@ -72,6 +72,7 @@ const Nuevo = () => {
           }
         )
         .then((res) => {
+          console.log(res.data.data);
           if (res.status === 200) setRequerimientos(res.data.data);
         });
     }
@@ -84,17 +85,18 @@ const Nuevo = () => {
 
     const filtroCategoria =
       filtros.categoriaTipo === "" ||
-      req.categoriaTipo == categoriaSeleccionada.descripcion;
+      (categoriaSeleccionada &&
+        req.categoriaTipo == categoriaSeleccionada.descripcion);
 
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
 
     const filtroTipo =
       filtros.tipoRequerimiento === "" ||
-      req.tipoRequerimiento == filtros.tipoRequerimiento;
+      req.tipoRequerimiento.id == filtros.tipoRequerimiento;
 
     const filtroUsuario =
       filtros.usuarioEmisor === "" ||
-      req.usuarioEmisor == filtros.usuarioEmisor;
+      req.usuarioEmisor.id == filtros.usuarioEmisor;
 
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
   });
@@ -125,6 +127,7 @@ const Nuevo = () => {
                   (tipo) => tipo.id == e.target.value
                 );
                 if (tipoSeleccionado) {
+                  manejadorFiltros("categoriaTipo", "");
                   manejadorFiltros("tipoRequerimiento", e.target.value);
                   setCategoriasSeleccionables(tipoSeleccionado?.categorias);
                 }
@@ -241,10 +244,10 @@ const Nuevo = () => {
                     </span>
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.tipoRequerimiento}
+                    {req.tipoRequerimiento.codigo}
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.usuarioEmisor}
+                    {`${req.usuarioEmisor.nombre} ${req.usuarioEmisor.apellido}`}
                   </td>
                   <td scope="col" className="align-middle">
                     {req.fechaHora}

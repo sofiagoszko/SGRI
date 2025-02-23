@@ -44,7 +44,7 @@ const ModalDetalleRequerimiento = ({
                     <p>
                       <b>Tipo</b>
                       <br />
-                      {requerimiento.tipoRequerimiento}
+                      {requerimiento.tipoRequerimiento.descripcion}
                     </p>
                   </div>
                   <div className="col-6 mb-3">
@@ -76,14 +76,14 @@ const ModalDetalleRequerimiento = ({
                     <p>
                       <b>Usuario Emisor</b>
                       <br />
-                      {requerimiento.usuarioEmisor}
+                      {`${requerimiento.usuarioEmisor.nombre} ${requerimiento.usuarioEmisor.apellido}`}
                     </p>
                   </div>
                   <div className="col-6 mb-3">
                     <p>
                       <b>Usuario Propietario</b>
                       <br />
-                      {requerimiento.usuarioDestinatario}
+                      {`${requerimiento.usuarioDestinatario.nombre} ${requerimiento.usuarioDestinatario.apellido}`}
                     </p>
                   </div>
                   <div className="col-6 mb-3">
@@ -139,7 +139,9 @@ const ModalDetalleRequerimiento = ({
                     requerimiento.comentarios.length ? (
                       requerimiento.comentarios.map((comentario) => (
                         <li className="bg-light rounded-pill px-4 fw-bold">
-                          {comentario}
+                          {`${comentario.id} - ${new Date(
+                            comentario.fecha_hora
+                          ).toLocaleDateString()} ${comentario.asunto}`}
                           <button className="btn">
                             <i className="bi bi-eye"></i>
                           </button>

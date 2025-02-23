@@ -83,17 +83,18 @@ const MisSolicitudes = () => {
 
     const filtroCategoria =
       filtros.categoriaTipo === "" ||
-      req.categoriaTipo == categoriaSeleccionada.descripcion;
+      (categoriaSeleccionada &&
+        req.categoriaTipo == categoriaSeleccionada.descripcion);
 
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
 
     const filtroTipo =
       filtros.tipoRequerimiento === "" ||
-      req.tipoRequerimiento == filtros.tipoRequerimiento;
+      req.tipoRequerimiento.id == filtros.tipoRequerimiento;
 
     const filtroUsuario =
       filtros.usuarioDestinatario === "" ||
-      req.usuarioDestinatario == filtros.usuarioDestinatario;
+      req.usuarioDestinatario.id == filtros.usuarioDestinatario;
 
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
   });
@@ -212,7 +213,7 @@ const MisSolicitudes = () => {
                 <th scope="col">Estado</th>
                 <th scope="col">Prioridad</th>
                 <th scope="col">Tipo</th>
-                <th scope="col">Solicitado por</th>
+                <th scope="col">Asignado a</th>
                 <th scope="col">Fecha de Alta</th>
                 <th scope="col">Asunto</th>
                 <th scope="col">Categoría</th>
@@ -238,10 +239,10 @@ const MisSolicitudes = () => {
                     </span>
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.tipoRequerimiento}
+                    {req.tipoRequerimiento.codigo}
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.usuarioEmisor}
+                    {`${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}`}
                   </td>
                   <td scope="col" className="align-middle">
                     {req.fechaHora}

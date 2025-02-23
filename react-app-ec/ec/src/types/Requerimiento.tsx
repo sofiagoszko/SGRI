@@ -1,14 +1,18 @@
+import { Usuario } from "./Usuario";
+import { TipoRequerimiento } from "./TipoRequerimiento";
+import { Comentario } from "./Comentario";
+
 export interface Requerimiento {
   archivosAdjuntos: string[];
   codigo: string;
   estado: string;
   prioridad: string;
-  tipoRequerimiento: number;
-  usuarioDestinatario: number;
-  usuarioEmisor: number;
+  tipoRequerimiento: TipoRequerimiento;
+  usuarioDestinatario: Usuario;
+  usuarioEmisor: Usuario;
   fechaHora: string;
   asunto: string;
   categoriaTipo: string;
-  comentarios: string[];
+  comentarios: Comentario[];
   descripcion: string;
 }
