@@ -26,8 +26,8 @@ public class ArchivoAdjuntoMapper {
 
         dto.setRequerimiento(archivoAdjunto.getRequerimiento().getId());
 
-        String url = String.format("%s/api/requerimiento/%d/archivo/%s",
-                baseUrl, archivoAdjunto.getRequerimiento().getId(), archivoAdjunto.getNombre());
+        String url = String.format("%s/api/requerimiento/archivoAdjunto/%s",
+                baseUrl, archivoAdjunto.getRuta());
 
         dto.setRuta(url);
         return dto;
