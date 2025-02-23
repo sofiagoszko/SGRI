@@ -4,18 +4,8 @@ import { useAuth } from "../../utils/AuthContext.jsx";
 import Layout from "../../components/Layout.js";
 import "./MisAsignaciones.css";
 import axios from "axios";
-
-interface Requerimiento {
-  id: number;
-  codigo: string;
-  estado: string;
-  prioridad: string;
-  tipoRequerimiento: number;
-  usuarioDestinatario: number;
-  fechaHora: string;
-  asunto: string;
-  categoriaTipo: string;
-}
+import { Requerimiento } from "../../types/Requerimiento.js";
+import ColoresEstado from "../../utils/ColoresEstado";
 
 interface TipoRequerimiento {
   id: number;
@@ -23,124 +13,117 @@ interface TipoRequerimiento {
   descripcion: string;
 }
 
-interface UsuarioDestinatario{
+interface UsuarioDestinatario {
   id: number;
   userName: string;
 }
 
-
 const ExplorarSolicitudes = () => {
+  const authToken = localStorage.getItem("authToken");
+  const [tipos, setTipos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const manejadorFiltros = (tipo, valor) => {
-      setFiltros({ ...filtros, [tipo]: valor });
+    setFiltros({ ...filtros, [tipo]: valor });
   };
   const [filtros, setFiltros] = useState({
-        categoriaTipo: "",
-        estado: "",
-        tipoRequerimiento: "",
-        usuarioDestinatario: "",
+    categoriaTipo: "",
+    estado: "",
+    tipoRequerimiento: "",
+    usuarioDestinatario: "",
+    fechaDesde: "",
+    fechaHasta: "",
   });
   const restablecerFiltros = () => {
-      setFiltros({
-        categoriaTipo: "",
-        estado: "",
-        tipoRequerimiento: "",
-        usuarioDestinatario: "",
-      });
+    setFiltros({
+      categoriaTipo: "",
+      estado: "",
+      tipoRequerimiento: "",
+      usuarioDestinatario: "",
+      fechaDesde: "",
+      fechaHasta: "",
+    });
   };
 
   const [mostrarModal, setMostrarModal] = useState(false);
   const [requerimientos, setRequerimientos] = useState<Requerimiento[]>([]);
-  const [tipos, setTipos] = useState<{ [key: number]: TipoRequerimiento }>({});
-  const [usuariosDestinatarios, setUsuariosDestinatarios] = useState<{ [key: number]: UsuarioDestinatario }>({});
+  const [usuariosDestinatarios, setUsuariosDestinatarios] = useState<{
+    [key: number]: UsuarioDestinatario;
+  }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [paginaActual, setPaginaActual] = useState(1); 
-  const [itemsPorPagina] = useState(5);  
-
-
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [itemsPorPagina] = useState(5);
 
   useEffect(() => {
-    const fetchRequerimientos = async () => {
-      try {
-        const token = localStorage.getItem("authToken");
-        const { data } = await axios.get(`http://localhost:8080/api/requerimiento/requerimientos`, {
-          headers: { Authorization: `Bearer ${token}` },
+    if (authToken) {
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/tipo-requerimiento/tipos`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          setTipos(res.data);
+        });
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/usuario-empresa/usuarios`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          setUsuarios(res.data.data);
         });
 
-        if (data.status === "Success") {
-          setRequerimientos(data.data);
-          fetchTiposRequerimientos(data.data);
-          fetchUsuariosDetinatarios(data.data);
-        } else {
-          setError("Error al obtener los requerimientos");
-        }
-      } catch (err) {
-        setError("Error de conexión con el servidor");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRequerimientos();
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/requerimiento/requerimientos`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          if (res.status === 200) setRequerimientos(res.data.data);
+        });
+    }
   }, []);
 
-  const fetchTiposRequerimientos = async (requerimientos: Requerimiento[]) => {
-    const tiposUnicos = new Set(requerimientos.map((req) => req.tipoRequerimiento));
-    const nuevosTipos: { [key: number]: TipoRequerimiento } = {};
-
-    await Promise.all(
-      Array.from(tiposUnicos).map(async (tipoId) => {
-        try {
-          const token = localStorage.getItem("authToken");
-          const { data } = await axios.get(`http://localhost:8080/api/tipo-requerimiento/tipos/${tipoId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (data.status === "Success") {
-            nuevosTipos[tipoId] = data.data;
-          }
-        } catch (error) {
-          console.error(`Error obteniendo tipo de requerimiento ${tipoId}:`, error);
-        }
-      })
-    );
-
-    setTipos(nuevosTipos);
-  };
-
-  const fetchUsuariosDetinatarios = async (requerimientos: Requerimiento[]) => {
-    const usuariosUnicos = new Set(requerimientos.map((req) => req.usuarioDestinatario));
-    const nuevosUsuarios: { [key: number]: { id: number; userName: string } } = {};
-
-    await Promise.all(
-      Array.from(usuariosUnicos).map(async (usuarioId) => {
-        try {
-          const token = localStorage.getItem("authToken");
-          const { data } = await axios.get(`http://localhost:8080/api/usuario-empresa/usuarios/${usuarioId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (data.status === "Success") {
-            nuevosUsuarios[usuarioId] = data.data;
-          }
-        } catch (error) {
-          console.error(`Error obteniendo usuario ${usuarioId}:`, error);
-        }
-      })
-    );
-
-    setUsuariosDestinatarios(nuevosUsuarios);
-  };
-
-  if (loading) return <p>Cargando...</p>;
-  if (error) return <p>{error}</p>;
-
   const requerimientosFiltrados = requerimientos.filter((req) => {
-    const filtroCategoria = !filtros.categoriaTipo || req.categoriaTipo === filtros.categoriaTipo;
-    const filtroEstado = !filtros.estado || req.estado === filtros.estado;
-    const filtroTipo =
-      !filtros.tipoRequerimiento || tipos[req.tipoRequerimiento].codigo  === filtros.tipoRequerimiento;
-    const filtroUsuario = !filtros.usuarioDestinatario || usuariosDestinatarios[req.usuarioDestinatario].userName === filtros.usuarioDestinatario;
+    const categoriaSeleccionada = categoriasSeleccionables.find(
+      (catSel) => filtros.categoriaTipo == catSel.id
+    );
 
-    return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
+    const filtroCategoria =
+      filtros.categoriaTipo === "" ||
+      req.categoriaTipo == categoriaSeleccionada.descripcion;
+
+    const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
+
+    const filtroTipo =
+      filtros.tipoRequerimiento === "" ||
+      req.tipoRequerimiento == filtros.tipoRequerimiento;
+
+    const filtroUsuario =
+      filtros.usuarioDestinatario === "" ||
+      req.usuarioDestinatario == filtros.usuarioDestinatario;
+
+    const filtroDesde =
+      !filtros.fechaDesde ||
+      new Date(req.fechaHora) >= new Date(filtros.fechaDesde);
+
+    const filtroHasta =
+      !filtros.fechaHasta ||
+      new Date(req.fechaHora) <= new Date(filtros.fechaHasta);
+
+    return (
+      filtroCategoria &&
+      filtroEstado &&
+      filtroTipo &&
+      filtroUsuario &&
+      filtroDesde &&
+      filtroHasta
+    );
   });
   const showModal = () => {
     setMostrarModal(true);
@@ -148,20 +131,20 @@ const ExplorarSolicitudes = () => {
   const closeModal = () => {
     setMostrarModal(false);
   };
-  const coloresEstado = {
-    Baja: "text-primary",
-    Media: "text-muted",
-    Alta: "text-warning",
-    Urgente: "text-danger",
-  };
-
 
   const idexUltimoItem = paginaActual * itemsPorPagina;
   const idexPrimerItem = idexUltimoItem - itemsPorPagina;
-  const currentRequerimientos = requerimientosFiltrados.slice(idexPrimerItem, idexUltimoItem);
+  const currentRequerimientos = requerimientosFiltrados.slice(
+    idexPrimerItem,
+    idexUltimoItem
+  );
 
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(requerimientosFiltrados.length / itemsPorPagina); i++) {
+  for (
+    let i = 1;
+    i <= Math.ceil(requerimientosFiltrados.length / itemsPorPagina);
+    i++
+  ) {
     pageNumbers.push(i);
   }
 
@@ -171,94 +154,116 @@ const ExplorarSolicitudes = () => {
         <h2>Explorar Solicitudes</h2>
 
         {/* Filtros */}
-      <div className="d-flex flex-wrap gap-3 justify-content-between mb-4">
-        <div className="d-flex flex-wrap gap-3">
-        <div className="form-floating">
-        <select
-          name="tipos"
-          id="tipos"
-          className="form-select min-w-select filtros"
-          value={filtros.tipoRequerimiento}
-          onChange={(e) => manejadorFiltros("tipoRequerimiento", e.target.value)}
-        >
-          <option value=""></option>
-          <option value="REH">REH</option>
-          <option value="ERR">ERR</option>
-          <option value="GOP">GOP</option>
-        </select>
-        <label htmlFor="tipos">Tipo</label>
+        <div className="d-flex flex-wrap gap-3 justify-content-between mb-4">
+          <div className="d-flex flex-wrap gap-3 justify-content-between flex-grow-1">
+            <div className="form-floating">
+              <select
+                name="tipos"
+                id="tipos"
+                className="form-select min-w-select filtros"
+                value={filtros.tipoRequerimiento}
+                onChange={(e) => {
+                  let tipoSeleccionado = tipos.find(
+                    (tipo) => tipo.id == e.target.value
+                  );
+                  if (tipoSeleccionado) {
+                    manejadorFiltros("tipoRequerimiento", e.target.value);
+                    setCategoriasSeleccionables(tipoSeleccionado?.categorias);
+                  }
+                }}
+              >
+                <option value="" hidden></option>
+                {tipos.map((tipo) => (
+                  <option value={tipo?.id || ""} key={tipo?.id}>
+                    {tipo?.codigo || ""}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="tipos">Tipo</label>
+            </div>
+            <div className="form-floating">
+              <select
+                name="categorias"
+                id="categorias"
+                className="form-select min-w-select filtros"
+                value={filtros.categoriaTipo}
+                onChange={(e) =>
+                  manejadorFiltros("categoriaTipo", e.target.value)
+                }
+                disabled={!categoriasSeleccionables.length}
+              >
+                <option value="" hidden></option>
+                {categoriasSeleccionables &&
+                  categoriasSeleccionables.map((tipo) => (
+                    <option value={tipo?.id || ""} key={tipo?.id}>
+                      {tipo?.descripcion || ""}
+                    </option>
+                  ))}
+              </select>
+              <label htmlFor="categorias">Categoria</label>
+            </div>
+            <div className="form-floating">
+              <select
+                name="estados"
+                id="estados"
+                className="form-select min-w-select filtros"
+                value={filtros.estado}
+                onChange={(e) => manejadorFiltros("estado", e.target.value)}
+              >
+                <option value="" hidden></option>
+                <option value="Abierto">Abierto</option>
+                <option value="Asignado">Asignado</option>
+              </select>
+              <label htmlFor="estados">Estado</label>
+            </div>
+            <div className="form-floating">
+              <select
+                name="Propietario"
+                id="Propietario"
+                className="form-select min-w-select filtros"
+                value={filtros.usuarioDestinatario}
+                onChange={(e) =>
+                  manejadorFiltros("usuarioDestinatario", e.target.value)
+                }
+              >
+                <option value="" hidden></option>
+                {usuarios.map((user) => (
+                  <option value={user?.id || ""} key={user?.id}>
+                    {`${user?.nombre} ${user?.apellido}`}
+                  </option>
+                ))}
+              </select>
+              <label htmlFor="propietario">Propietario</label>
+            </div>
+            <div className="form-floating">
+              <input
+                type="date"
+                id="fecha_desde"
+                className="form-control min-w-select filtros"
+                onChange={(e) => manejadorFiltros("fechaDesde", e.target.value)}
+              />
+              <label htmlFor="fecha_desde">Fecha Desde</label>
+            </div>
+            <div className="form-floating">
+              <input
+                type="date"
+                id="fecha_hasta"
+                className="form-control min-w-select filtros"
+                onChange={(e) => manejadorFiltros("fechaHasta", e.target.value)}
+              />
+              <label htmlFor="fecha_hasta">Fecha Hasta</label>
+            </div>
+          </div>
+
+          <div className="d-flex justify-content-center">
+            <button
+              className="btn btn-secondary boton"
+              onClick={restablecerFiltros}
+            >
+              Limpiar
+            </button>
+          </div>
         </div>
-        <div className="form-floating">
-        <select
-          name="categorias"
-          id="categorias"
-          className="form-select min-w-select filtros"
-          value={filtros.categoriaTipo}
-          onChange={(e) => manejadorFiltros("categoriaTipo", e.target.value)}
-        >
-          <option value=""></option>
-          <option value="Hardware">Hardware</option>
-          <option value="Software">Software</option>
-          <option value="Red">Red</option>
-          <option value="Seguridad">Seguridad</option>
-        </select>
-        <label htmlFor="categorias">Categoria</label>
-        </div>
-        <div className="form-floating">
-        <select
-          name="estados"
-          id="estados"
-          className="form-select min-w-select filtros"
-          value={filtros.estado}
-          onChange={(e) => manejadorFiltros("estado", e.target.value)}
-        >
-          <option value=""></option>
-          <option>Abierto</option>
-          <option>Asignado</option>
-        </select>
-        <label htmlFor="estados">Estado</label>
-        </div>
-        <div className="form-floating">
-        <select
-          name="propietario"
-          id="propietario"
-          className="form-select min-w-select filtros"
-          value={filtros.usuarioDestinatario}
-          onChange={(e) => manejadorFiltros("usuarioDestinatario", e.target.value)}
-        >
-          <option value=""></option>
-          <option>Sofia</option>
-          <option>Aldo</option>
-          <option>Seba</option>
-          <option>Silvia</option>
-        </select>
-        <label htmlFor="propietario">Propietario</label>
-        </div>
-        </div>
-        <div className="form-floating">
-          <input
-          type="date"
-          id="fecha_desde"
-          className="form-control min-w-select filtros"
-          onChange={(e) => manejadorFiltros("fechaDesde", e.target.value)}
-          />
-          <label htmlFor="fecha_desde">Fecha Desde</label>
-        </div>
-        <div className="form-floating">
-        <input
-          type="date"
-          id="fecha_hasta"
-          className="form-control min-w-select filtros"
-          onChange={(e) => manejadorFiltros("fechaHasta", e.target.value)}
-          />
-          <label htmlFor="fecha_hasta">Fecha Hasta</label>
-        </div>
-        <div className="d-flex justify-content-center">
-          <button className="btn btn-secondary boton" onClick={restablecerFiltros}>
-            Limpiar
-          </button>
-        </div>
-      </div>
         {/* FIN Filtros */}
 
         {/* Tabla */}
@@ -291,7 +296,7 @@ const ExplorarSolicitudes = () => {
                     {req.estado}
                   </td>
                   <td scope="col" className="align-middle">
-                    <span className={coloresEstado[req.prioridad!]}>
+                    <span className={ColoresEstado[req.prioridad!]}>
                       {req.prioridad}
                     </span>
                   </td>
@@ -299,7 +304,8 @@ const ExplorarSolicitudes = () => {
                     {tipos[req.tipoRequerimiento]?.codigo || "Cargando..."}
                   </td>
                   <td scope="col" className="align-middle">
-                    {usuariosDestinatarios[req.usuarioDestinatario]?.userName || "Cargando..."}
+                    {usuariosDestinatarios[req.usuarioDestinatario]?.userName ||
+                      "Cargando..."}
                   </td>
                   <td scope="col" className="align-middle">
                     {new Date(req.fechaHora).toLocaleDateString()}
@@ -319,8 +325,8 @@ const ExplorarSolicitudes = () => {
 
         {/* Paginación */}
         <div>
-        <ul className="pagination pagination-sm">
-            <li className={`page-item ${paginaActual === 1 ? 'disabled' : ''}`}>
+          <ul className="pagination pagination-sm">
+            <li className={`page-item ${paginaActual === 1 ? "disabled" : ""}`}>
               <button
                 className="page-link"
                 onClick={() => setPaginaActual(paginaActual - 1)}
@@ -332,7 +338,9 @@ const ExplorarSolicitudes = () => {
             {pageNumbers.map((number) => (
               <li
                 key={number}
-                className={`page-item ${paginaActual === number ? 'active' : ''}`}
+                className={`page-item ${
+                  paginaActual === number ? "active" : ""
+                }`}
               >
                 <button
                   className="page-link"
@@ -342,7 +350,11 @@ const ExplorarSolicitudes = () => {
                 </button>
               </li>
             ))}
-            <li className={`page-item ${paginaActual === pageNumbers.length ? 'disabled' : ''}`}>
+            <li
+              className={`page-item ${
+                paginaActual === pageNumbers.length ? "disabled" : ""
+              }`}
+            >
               <button
                 className="page-link"
                 onClick={() => setPaginaActual(paginaActual + 1)}

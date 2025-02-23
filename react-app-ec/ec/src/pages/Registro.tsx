@@ -17,47 +17,48 @@ function Login() {
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
-  //const AUTH_ENDPOINT = "/api/usuario-empresa/registracion"; // Constante para la URL de autenticación
-
   // Maneja el envío del formulario
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     //setShowAlert(false);
     try {
-        const response = await fetch("http://localhost:8080/api/usuario-empresa/registracion", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                  nombre: nombre,
-                  apellido: apellido,
-                  email: email,
-                  password: password,
-                  userName: usuario,
-                  legajo: legajo,
-                  cargo: cargo,
-                  departamento: departamento
-            }),
-        });
-
-        const data = await response.json();
-        console.log("Respuesta del backend:", data);
-
-        if (response.ok) {
-            //const data = await response.json();
-            console.log(data)
-            navigate('/');
-        } else {
-            setAlertMessage(data.userFriendlyMessage)
-            setAlertType('warning')
-            setShowAlert(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/usuario-empresa/registracion`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: nombre,
+            apellido: apellido,
+            email: email,
+            password: password,
+            userName: usuario,
+            legajo: legajo,
+            cargo: cargo,
+            departamento: departamento,
+          }),
         }
-    } catch (error) {
-      console.error("Error en creación de requerimiento:", error);  
-        setAlertMessage('Datos invalidos')
-        setAlertType('danger')
+      );
+
+      const data = await response.json();
+      console.log("Respuesta del backend:", data);
+
+      if (response.ok) {
+        //const data = await response.json();
+        console.log(data);
+        navigate("/");
+      } else {
+        setAlertMessage(data.userFriendlyMessage);
+        setAlertType("warning");
         setShowAlert(true);
+      }
+    } catch (error) {
+      console.error("Error en creación de requerimiento:", error);
+      setAlertMessage("Datos invalidos");
+      setAlertType("danger");
+      setShowAlert(true);
     }
   };
 
@@ -70,7 +71,7 @@ function Login() {
           <div className={`alert alert-${alertType}`} role="alert">
             {alertMessage}
           </div>
-        )} 
+        )}
 
         <form onSubmit={handleSubmit} className="row justify-content-center">
           <div className="mb-3 col-12 col-md-5">
@@ -119,8 +120,9 @@ function Login() {
             <label htmlFor="legajo" className="form-label">
               Legajo <span className="text-danger">*</span>
             </label>
-            <input type="number" 
-              className="form-control" 
+            <input
+              type="number"
+              className="form-control"
               id="legajo"
               value={legajo}
               onChange={(e) => setLegajo(e.target.value)}
@@ -149,18 +151,18 @@ function Login() {
             <label htmlFor="cargo" className="form-label">
               Cargo <span className="text-danger">*</span>
             </label>
-            <select 
-              name="cargo" 
-              id="cargo" 
+            <select
+              name="cargo"
+              id="cargo"
               className="form-select"
               value={cargo}
               onChange={(e) => setCargo(e.target.value)}
             >
-              <option value= "">Seleccione un cargo</option>
-              <option value= "Cargo 1">Cargo 1</option>
-              <option value= "Cargo 2">Cargo 2</option>
-              <option value= "Cargo 3">Cargo 3</option>
-              <option value= "Cargo 4">Cargo 4</option>
+              <option value="">Seleccione un cargo</option>
+              <option value="Cargo 1">Cargo 1</option>
+              <option value="Cargo 2">Cargo 2</option>
+              <option value="Cargo 3">Cargo 3</option>
+              <option value="Cargo 4">Cargo 4</option>
             </select>
           </div>
           <div className="mb-3 col-12 col-md-5">

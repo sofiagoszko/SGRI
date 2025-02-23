@@ -4,114 +4,108 @@ import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import "./MisAsignaciones.css"; // Importa los estilos CSS
 import { tablePaginationClasses } from "@mui/material";
+import { Requerimiento } from "../../types/Requerimiento.js";
 import axios from "axios";
+import ModalDetalleRequerimiento from "../../components/ModalDetalleRequerimiento.js";
+const authToken = localStorage.getItem("authToken") || "";
+import ColoresEstado from "../../utils/ColoresEstado";
 
 const Nuevo = () => {
+  const userId = localStorage.getItem("userId");
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [tipos, setTipos] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+  const [reqSeleccionado, setReqSeleccionado] = useState<
+    Requerimiento | undefined
+  >(undefined);
+  const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const manejadorFiltros = (tipo, valor) => {
     setFiltros({ ...filtros, [tipo]: valor });
   };
   const [filtros, setFiltros] = useState({
-      categoriaTipo: "",
-      estado: "",
-      tipoRequerimiento: "",
-      usuarioDestinatario: "",
+    categoriaTipo: "",
+    estado: "",
+    tipoRequerimiento: "",
+    usuarioEmisor: "",
   });
   const restablecerFiltros = () => {
     setFiltros({
       categoriaTipo: "",
       estado: "",
       tipoRequerimiento: "",
-      usuarioDestinatario: "",
+      usuarioEmisor: "",
     });
+    setCategoriasSeleccionables([]);
   };
-  const [requerimientos, setRequerimientos] = useState([
-    {
-      codigo: "GOP-2024-0000099716",
-      estado: "Asignado",
-      prioridad: "ALTA",
-      tipoRequerimiento: "GOP",
-      usuarioDestinatario: "Aldo",  
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Hardware",
-    },
-    {
-      codigo: "ERR-2024-0000099716",
-      estado: "Abierto",
-      prioridad: "BAJA",
-      tipoRequerimiento: "ERR",
-      usuarioDestinatario: "Seba",
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Software",
-    }, 
-    {
-      codigo: "GOP-2024-0000099716",
-      estado: "Asignado",
-      prioridad: "URGENTE",
-      tipoRequerimiento: "GOP",
-      usuarioDestinatario: "Aldo",
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Red",
-    }, 
-    {
-      codigo: "ERR-2024-0000099716",
-      estado: "Abierto",
-      prioridad: "ALTA",
-      tipoRequerimiento: "ERR",
-      usuarioDestinatario: "Seba",
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Red",
-    }, 
-    {
-      codigo: "GOP-2024-0000099716",
-      estado: "Asignado",
-      prioridad: "MEDIA",
-      tipoRequerimiento: "GOP",
-      usuarioDestinatario: "Aldo",
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Software",
-    },
-    {
-      codigo: "ERR-2024-0000099716",
-      estado: "Abierto",
-      prioridad: "ALTA",
-      tipoRequerimiento: "ERR",
-      usuarioDestinatario: "Seba",
-      fechaHora: "19/11/2024",
-      asunto: "Análisis",
-      categoriaTipo: "Hardware",
-    },
-  ]);
+  const [requerimientos, setRequerimientos] = useState<Requerimiento[]>([]);
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/requerimiento/requerimientos`).then(res =>
-    {}
-    )
-  })
+    if (authToken) {
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/tipo-requerimiento/tipos`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          setTipos(res.data);
+        });
+      axios
+        .get(`${import.meta.env.VITE_API_URL}/usuario-empresa/usuarios`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          setUsuarios(res.data.data);
+        });
+
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_API_URL
+          }/requerimiento/requerimientos/usuario-destinatario/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) setRequerimientos(res.data.data);
+        });
+    }
+  }, []);
 
   const requerimientosFiltrados = requerimientos.filter((req) => {
-    const filtroCategoria = filtros.categoriaTipo === "" || req.categoriaTipo === filtros.categoriaTipo;
+    const categoriaSeleccionada = categoriasSeleccionables.find(
+      (catSel) => filtros.categoriaTipo == catSel.id
+    );
+
+    const filtroCategoria =
+      filtros.categoriaTipo === "" ||
+      req.categoriaTipo == categoriaSeleccionada.descripcion;
+
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
-    const filtroTipo = filtros.tipoRequerimiento === "" || req.tipoRequerimiento === filtros.tipoRequerimiento;
-    const filtroUsuario = filtros.usuarioDestinatario === "" || req.usuarioDestinatario === filtros.usuarioDestinatario;
+
+    const filtroTipo =
+      filtros.tipoRequerimiento === "" ||
+      req.tipoRequerimiento == filtros.tipoRequerimiento;
+
+    const filtroUsuario =
+      filtros.usuarioEmisor === "" ||
+      req.usuarioEmisor == filtros.usuarioEmisor;
+
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
   });
-  const showModal = () => {
+
+  const showModal = (requerimiento: Requerimiento) => {
+    setReqSeleccionado(requerimiento);
     setMostrarModal(true);
   };
   const closeModal = () => {
+    setReqSeleccionado(undefined);
     setMostrarModal(false);
-  };
-  const coloresEstado = {
-    BAJA: "text-primary",
-    MEDIA: "text-muted",
-    ALTA: "text-warning",
-    URGENTE: "text-danger",
   };
   return (
     <Layout>
@@ -126,12 +120,22 @@ const Nuevo = () => {
               id="tipos"
               className="form-select min-w-select filtros"
               value={filtros.tipoRequerimiento}
-              onChange={(e) => manejadorFiltros("tipoRequerimiento", e.target.value)}
+              onChange={(e) => {
+                let tipoSeleccionado = tipos.find(
+                  (tipo) => tipo.id == e.target.value
+                );
+                if (tipoSeleccionado) {
+                  manejadorFiltros("tipoRequerimiento", e.target.value);
+                  setCategoriasSeleccionables(tipoSeleccionado?.categorias);
+                }
+              }}
             >
-              <option value=""></option>
-              <option value="REH">REH</option>
-              <option value="ERR">ERR</option>
-              <option value="GOP">GOP</option>
+              <option value="" hidden></option>
+              {tipos.map((tipo) => (
+                <option value={tipo?.id || ""} key={tipo?.id}>
+                  {tipo?.codigo || ""}
+                </option>
+              ))}
             </select>
             <label htmlFor="tipos">Tipo</label>
           </div>
@@ -141,13 +145,18 @@ const Nuevo = () => {
               id="categorias"
               className="form-select min-w-select filtros"
               value={filtros.categoriaTipo}
-              onChange={(e) => manejadorFiltros("categoriaTipo", e.target.value)}
+              onChange={(e) =>
+                manejadorFiltros("categoriaTipo", e.target.value)
+              }
+              disabled={!categoriasSeleccionables.length}
             >
-              <option value=""></option>
-              <option>Hardware</option>
-              <option>Software</option>
-              <option>Red</option>
-              <option>Seguridad</option>
+              <option value="" hidden></option>
+              {categoriasSeleccionables &&
+                categoriasSeleccionables.map((tipo) => (
+                  <option value={tipo?.id || ""} key={tipo?.id}>
+                    {tipo?.descripcion || ""}
+                  </option>
+                ))}
             </select>
             <label htmlFor="tipos">Categoría</label>
           </div>
@@ -159,9 +168,9 @@ const Nuevo = () => {
               value={filtros.estado}
               onChange={(e) => manejadorFiltros("estado", e.target.value)}
             >
-              <option value=""></option>
-              <option>Abierto</option>
-              <option>Asignado</option>
+              <option value="" hidden></option>
+              <option value="Abierto">Abierto</option>
+              <option value="Asignado">Asignado</option>
             </select>
             <label htmlFor="tipos">Estado</label>
           </div>
@@ -171,20 +180,28 @@ const Nuevo = () => {
               name="Propietario"
               id="Propietario"
               className="form-select min-w-select filtros"
-              value={filtros.usuarioDestinatario}
-              onChange={(e) => manejadorFiltros("usuarioDestinatario", e.target.value)}
+              value={filtros.usuarioEmisor}
+              onChange={(e) =>
+                manejadorFiltros("usuarioEmisor", e.target.value)
+              }
             >
-              <option value=""></option>
-              <option>Sofia</option>
-              <option>Aldo</option>
-              <option>Seba</option>
-              <option>Silvia</option>
+              <option value="" hidden></option>
+              {usuarios.map((user) => (
+                <option value={user?.id || ""} key={user?.id}>
+                  {`${user?.nombre} ${user?.apellido}`}
+                </option>
+              ))}
             </select>
-            <label htmlFor="tipos">Propietario</label>
+            <label htmlFor="tipos">Asignado por</label>
           </div>
-            <div className="d-flex justify-content-center"> {/* Centrar el botón */}
-            <button className="btn btn-secondary boton" onClick={restablecerFiltros}>
-            Limpiar
+          <div className="d-flex justify-content-center">
+            {" "}
+            {/* Centrar el botón */}
+            <button
+              className="btn btn-secondary boton"
+              onClick={restablecerFiltros}
+            >
+              Limpiar
             </button>
           </div>
         </div>
@@ -198,7 +215,7 @@ const Nuevo = () => {
                 <th scope="col">Estado</th>
                 <th scope="col">Prioridad</th>
                 <th scope="col">Tipo</th>
-                <th scope="col">Propietario</th>
+                <th scope="col">Asignado por</th>
                 <th scope="col">Fecha de Alta</th>
                 <th scope="col">Asunto</th>
                 <th scope="col">Categoría</th>
@@ -206,11 +223,11 @@ const Nuevo = () => {
             </thead>
             <tbody>
               {requerimientosFiltrados.map((req) => (
-                <tr>
+                <tr key={req?.id}>
                   <td scope="col">
                     <div className="d-flex gap-2 align-items-center">
                       {req.codigo}
-                      <button className="btn" onClick={showModal}>
+                      <button className="btn" onClick={() => showModal(req)}>
                         <i className="bi bi-eye"></i>
                       </button>
                     </div>
@@ -219,7 +236,7 @@ const Nuevo = () => {
                     {req.estado}
                   </td>
                   <td scope="col" className="align-middle">
-                    <span className={coloresEstado[req.prioridad!]}>
+                    <span className={ColoresEstado[req.prioridad!]}>
                       {req.prioridad}
                     </span>
                   </td>
@@ -227,7 +244,7 @@ const Nuevo = () => {
                     {req.tipoRequerimiento}
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.usuarioDestinatario}
+                    {req.usuarioEmisor}
                   </td>
                   <td scope="col" className="align-middle">
                     {req.fechaHora}
@@ -245,164 +262,11 @@ const Nuevo = () => {
         </div>
         {/* Fin Tabla */}
       </section>
-
-      <div
-        className={`modal fade ${mostrarModal ? " show d-block" : ""}`}
-        id="exampleModal"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Requerimiento REH-2024-0000000012
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={closeModal}
-              ></button>
-            </div>
-            <div className="modal-body">
-              <div className="row row-gap-5">
-                <div className="col-6 border-end">
-                  <h1 className="mb-5">Datos del requerimiento</h1>
-                  <div className="row">
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Tipo</b>
-                        <br />
-                        REH
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Categoría</b>
-                        <br />
-                        SOFTWARE
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Prioridad</b>
-                        <br />
-                        <span className="text-danger">URGENTE</span>
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Estado</b>
-                        <br />
-                        ASIGNADO
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Usuario Emisor</b>
-                        <br />
-                        SILVIA ROMERO
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Usuario Propietario</b>
-                        <br />
-                        ADMIN
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Descripción</b>
-                        <br />
-                        Cuando quiero editar los requerimientos me figura un
-                        error de actualización, pero no me toma el código de la
-                        licencia.
-                      </p>
-                    </div>
-                    <div className="col-6 mb-3">
-                      <p>
-                        <b>Asunto</b>
-                        <br />
-                        ACTUALIZACIÓN
-                      </p>
-                      <p>
-                        <b>Fecha y hora de emisión</b>
-                        <br />
-                        02/11/2024
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-6">
-                  <div className="border-bottom">
-                    <h1 className="mb-3">Archivos adjuntos</h1>
-                    <ul className="list-unstyled lista-botones">
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        Archivo 1
-                        <button className="btn">
-                          <i className="bi bi-download"></i>
-                        </button>
-                      </li>
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        Archivo 2
-                        <button className="btn">
-                          <i className="bi bi-download"></i>
-                        </button>
-                      </li>
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        Archivo 3
-                        <button className="btn">
-                          <i className="bi bi-download"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                  <div>
-                    <div className="d-flex justify-content-between align-items-center my-3">
-                      <h1>Comentarios</h1>
-                      <button className="btn">
-                        <i className="bi bi-plus fs-3"></i>
-                      </button>
-                    </div>
-
-                    <ul className="list-unstyled lista-botones">
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        1 - 02/11/2024 22:35 - Silvia Romero
-                        <button className="btn">
-                          <i className="bi bi-eye"></i>
-                        </button>
-                      </li>
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        2 - Fecha y hora - Usuario emisor
-                        <button className="btn">
-                          <i className="bi bi-eye"></i>
-                        </button>
-                      </li>
-                      <li className="bg-light rounded-pill px-4 fw-bold">
-                        3 - Fecha y hora - Usuario emisor
-                        <button className="btn">
-                          <i className="bi bi-eye"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer d-flex justify-content-center align-items-center my-2">
-              <button
-                onClick={closeModal}
-                className="btn btn-login-success text-white px-3"
-              >
-                Aceptar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ModalDetalleRequerimiento
+        requerimiento={reqSeleccionado}
+        mostrarModal={mostrarModal}
+        closeModal={closeModal}
+      />
     </Layout>
   );
 };

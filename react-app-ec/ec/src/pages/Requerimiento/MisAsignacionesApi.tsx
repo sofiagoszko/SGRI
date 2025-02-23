@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Layout from "../../components/Layout";
 import "./MisAsignaciones.css"; // Importa los estilos CSS
 import { tablePaginationClasses } from "@mui/material";
+import { ColoresEstado } from "../../utils/ColoresEstado";
 
 const Nuevo = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -11,10 +12,10 @@ const Nuevo = () => {
     setFiltros({ ...filtros, [tipo]: valor });
   };
   const [filtros, setFiltros] = useState({
-      categoriaTipo: "",
-      estado: "",
-      tipoRequerimiento: "",
-      usuarioDestinatario: "",
+    categoriaTipo: "",
+    estado: "",
+    tipoRequerimiento: "",
+    usuarioDestinatario: "",
   });
   const restablecerFiltros = () => {
     setFiltros({
@@ -49,10 +50,16 @@ const Nuevo = () => {
   };
 
   const requerimientosFiltrados = requerimientos.filter((req) => {
-    const filtroCategoria = filtros.categoriaTipo === "" || req.categoriaTipo === filtros.categoriaTipo;
+    const filtroCategoria =
+      filtros.categoriaTipo === "" ||
+      req.categoriaTipo === filtros.categoriaTipo;
     const filtroEstado = filtros.estado === "" || req.estado === filtros.estado;
-    const filtroTipo = filtros.tipoRequerimiento === "" || req.tipoRequerimiento === filtros.tipoRequerimiento;
-    const filtroUsuario = filtros.usuarioDestinatario === "" || req.usuarioDestinatario === filtros.usuarioDestinatario;
+    const filtroTipo =
+      filtros.tipoRequerimiento === "" ||
+      req.tipoRequerimiento === filtros.tipoRequerimiento;
+    const filtroUsuario =
+      filtros.usuarioDestinatario === "" ||
+      req.usuarioDestinatario === filtros.usuarioDestinatario;
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
   });
   const showModal = () => {
@@ -60,12 +67,6 @@ const Nuevo = () => {
   };
   const closeModal = () => {
     setMostrarModal(false);
-  };
-  const coloresEstado = {
-    BAJA: "text-primary",
-    MEDIA: "text-muted",
-    ALTA: "text-warning",
-    URGENTE: "text-danger",
   };
   return (
     <Layout>
@@ -80,7 +81,9 @@ const Nuevo = () => {
               id="tipos"
               className="form-select min-w-select"
               value={filtros.tipoRequerimiento}
-              onChange={(e) => manejadorFiltros("tipoRequerimiento", e.target.value)}
+              onChange={(e) =>
+                manejadorFiltros("tipoRequerimiento", e.target.value)
+              }
             >
               <option value=""></option>
               <option value="REH">REH</option>
@@ -95,7 +98,9 @@ const Nuevo = () => {
               id="categorias"
               className="form-select min-w-select"
               value={filtros.categoriaTipo}
-              onChange={(e) => manejadorFiltros("categoriaTipo", e.target.value)}
+              onChange={(e) =>
+                manejadorFiltros("categoriaTipo", e.target.value)
+              }
             >
               <option value=""></option>
               <option>Hardware</option>
@@ -126,7 +131,9 @@ const Nuevo = () => {
               id="Propietario"
               className="form-select min-w-select"
               value={filtros.usuarioDestinatario}
-              onChange={(e) => manejadorFiltros("usuarioDestinatario", e.target.value)}
+              onChange={(e) =>
+                manejadorFiltros("usuarioDestinatario", e.target.value)
+              }
             >
               <option value=""></option>
               <option>Sofia</option>
@@ -136,9 +143,11 @@ const Nuevo = () => {
             </select>
             <label htmlFor="tipos">Todos los Propietarios</label>
           </div>
-            <div className="d-flex justify-content-center"> {/* Centrar el botón */}
+          <div className="d-flex justify-content-center">
+            {" "}
+            {/* Centrar el botón */}
             <button className="btn btn-secondary" onClick={restablecerFiltros}>
-            Desfiltrar
+              Desfiltrar
             </button>
           </div>
         </div>
@@ -173,7 +182,7 @@ const Nuevo = () => {
                     {req.estado}
                   </td>
                   <td scope="col" className="align-middle">
-                    <span className={coloresEstado[req.prioridad!]}>
+                    <span className={ColoresEstado[req.prioridad!]}>
                       {req.prioridad}
                     </span>
                   </td>

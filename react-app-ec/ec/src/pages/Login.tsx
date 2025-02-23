@@ -1,7 +1,6 @@
 ﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import getBaseUrl from "../utils/getBaseUrl.js";
 import { jwtDecode } from "jwt-decode";
 
 function Login() {
@@ -13,9 +12,6 @@ function Login() {
   const [showAlert, setShowAlert] = useState(false);
   const navigate = useNavigate();
 
-
-  const AUTH_ENDPOINT = `${getBaseUrl()}/api/usuario-empresa/credenciales`; // Constante para la URL de autenticación
-
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,38 +19,45 @@ function Login() {
     // navigate("/home");
     try {
       //console.log(AUTH_ENDPOINT)
-        const response = await fetch("http://localhost:8080/api/usuario-empresa/credenciales", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userName: usuario,
-                password: password,
-            }),
-        });
-
-        const data = await response.json();
-        console.log("Respuesta del backend:", data);
-
-        if (response.ok) {
-            //const data = await response.json();
-            const authToken = data.data;
-            localStorage.setItem('authToken', authToken);
-            localStorage.setItem('user', usuario);
-            const decodedToken = jwtDecode(authToken) as {id: number};
-            const userId = decodedToken.id; 
-            localStorage.setItem('userId', userId.toString());
-            navigate('/home'); 
-        } else {
-            setAlertMessage('Por favor, verifica tus credenciales y vuelve a intentarlo')
-            setAlertType('warning')
-            setShowAlert(true); 
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/usuario-empresa/credenciales`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userName: usuario,
+            password: password,
+          }),
         }
+      );
+
+      const data = await response.json();
+      console.log("Respuesta del backend:", data);
+
+      if (response.ok) {
+        //const data = await response.json();
+        const authToken = data.data;
+        localStorage.setItem("authToken", authToken);
+        localStorage.setItem("user", usuario);
+        const decodedToken = jwtDecode(authToken) as { id: number };
+        const userId = decodedToken.id;
+        localStorage.setItem("userId", userId.toString());
+        navigate("/home");
+      } else {
+        setAlertMessage(
+          "Por favor, verifica tus credenciales y vuelve a intentarlo"
+        );
+        setAlertType("warning");
+        setShowAlert(true);
+      }
     } catch (error) {
-      console.error("Error en la autenticación:", error);  
-      setAlertMessage('Hubo un problema con el servidor. Inténtalo de nuevo más tarde.')
-      setAlertType('danger')
+      console.error("Error en la autenticación:", error);
+      setAlertMessage(
+        "Hubo un problema con el servidor. Inténtalo de nuevo más tarde."
+      );
+      setAlertType("danger");
       setShowAlert(true);
     }
   };
@@ -64,12 +67,11 @@ function Login() {
       <div className="bg-white p-5 rounded-5 card__login">
         <h1 className="mb-4 text-center">Iniciar sesión</h1>
         <form onSubmit={handleSubmit} className="d-flex flex-column">
-
-        {showAlert && alertMessage && (
-          <div className={`alert alert-${alertType}`} role="alert">
-            {alertMessage}
-          </div>
-        )} 
+          {showAlert && alertMessage && (
+            <div className={`alert alert-${alertType}`} role="alert">
+              {alertMessage}
+            </div>
+          )}
 
           <div className="mb-3">
             <label htmlFor="usuario" className="form-label">
