@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import com.api.sgri.dto.ComentarioDTO;
 import com.api.sgri.exception.NotFoundException;
@@ -21,6 +22,9 @@ import com.api.sgri.service.UsuarioEmpresaService;
 
 @Component
 public class ComentarioMapper {
+    @Value("${app.base-url}")
+    private String baseUrl;
+
 
     @Autowired
     private UsuarioEmpresaService usuarioEmpresaService;
@@ -44,8 +48,9 @@ public class ComentarioMapper {
         dto.setRequerimiento(comentario.getRequerimiento().getId());
         // Mapear archivos adjuntos de Comentario
         if (comentario.getArchivosComentario() != null) {
+            String url = baseUrl+"/api/requerimiento/archivoComentario/";
             List<String> archivosComentario = comentario.getArchivosComentario().stream()
-                .map(archivoComentario -> archivoComentario.getNombre())
+                .map(archivoComentario -> url + archivoComentario.getRuta())
                 .collect(Collectors.toList());
             dto.setArchivosComentario(archivosComentario);
         }

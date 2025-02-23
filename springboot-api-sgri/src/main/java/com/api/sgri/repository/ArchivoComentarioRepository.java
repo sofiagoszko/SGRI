@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ArchivoComentarioRepository extends JpaRepository<ArchivoComentario, Long> {
     List<ArchivoComentario> findByComentario_Id(Long comentarioID);
+    ArchivoComentario findByRuta(String ruta);
     ArchivoComentario findByNombre(String nombre);
 }
