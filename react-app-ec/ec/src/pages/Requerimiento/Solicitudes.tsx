@@ -13,6 +13,8 @@ const ExplorarSolicitudes = () => {
   >(undefined);
   const [tipos, setTipos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [fechaDesde, setFechaDesde] = useState("");
+  const [fechaHasta, setFechaHasta] = useState("");
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const manejadorFiltros = (tipo, valor) => {
     setFiltros({ ...filtros, [tipo]: valor });
@@ -34,6 +36,8 @@ const ExplorarSolicitudes = () => {
       fechaDesde: "",
       fechaHasta: "",
     });
+    setFechaDesde("");
+    setFechaHasta("");
   };
 
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -232,8 +236,12 @@ const ExplorarSolicitudes = () => {
               <input
                 type="date"
                 id="fecha_desde"
+                value={fechaDesde}
                 className="form-control min-w-select filtros"
-                onChange={(e) => manejadorFiltros("fechaDesde", e.target.value)}
+                onChange={(e) => {
+                  manejadorFiltros("fechaDesde", e.target.value);
+                  setFechaDesde(e.target.value);
+                }}
               />
               <label htmlFor="fecha_desde">Fecha Desde</label>
             </div>
@@ -241,8 +249,12 @@ const ExplorarSolicitudes = () => {
               <input
                 type="date"
                 id="fecha_hasta"
+                value={fechaHasta}
                 className="form-control min-w-select filtros"
-                onChange={(e) => manejadorFiltros("fechaHasta", e.target.value)}
+                onChange={(e) => {
+                  manejadorFiltros("fechaHasta", e.target.value);
+                  setFechaHasta(e.target.value);
+                }}
               />
               <label htmlFor="fecha_hasta">Fecha Hasta</label>
             </div>
