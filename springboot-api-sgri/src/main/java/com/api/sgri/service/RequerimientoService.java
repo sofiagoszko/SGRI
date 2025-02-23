@@ -92,6 +92,12 @@ public class RequerimientoService {
         .collect(Collectors.toList());
     }
 
+    public List<RequerimientoDTO> obtenerRequerimientosPorIdUsuarioEmisor(Long id) throws NotFoundException {
+        return requerimientoRepository.findByUsuarioEmisor_Id(id).stream()
+        .map(requerimientoMapper::toDTO)
+        .collect(Collectors.toList());
+    }
+
     public RequerimientoDTO updateRequerimiento(Requerimiento requerimiento, RequerimientoDTO requerimientoDTO) throws NotFoundException {
         requerimiento.setAsunto(requerimientoDTO.getAsunto());
         requerimiento.setDescripcion(requerimientoDTO.getDescripcion());
