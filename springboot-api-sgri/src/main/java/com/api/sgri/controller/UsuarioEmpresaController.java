@@ -3,6 +3,7 @@ package com.api.sgri.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.api.sgri.dto.UsuarioUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -142,9 +143,10 @@ public class UsuarioEmpresaController {
     }
 
     @PostMapping("/registracion")
-    public ResponseEntity<Object> createUsuario(@RequestBody UsuarioEmpresaDTO usuarioEmpresaDTO) {
+    public ResponseEntity<Object> createUsuario(@RequestBody UsuarioEmpresa usuarioEmpresa) {
         try {
-            UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresaDTO);
+            //UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresaDTO);
+            usuarioEmpresaService.crearUsuarioEmpresa(usuarioEmpresa);
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Se ha registrado el usuario")
@@ -169,11 +171,11 @@ public class UsuarioEmpresaController {
     }
 
     @PutMapping("/usuarios/{id}")
-    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioEmpresaDTO usuario) {
+    public ResponseEntity<Object> updateUsuario(@PathVariable Long id, @RequestBody UsuarioUpdateRequest request) {
         try {
             UsuarioEmpresa usuarioEmpresa = usuarioEmpresaService.getUsuarioEmpresaByIdEntity(id);
 
-            UsuarioEmpresaDTO usuarioActualizado = usuarioEmpresaService.updateUsuarioEmpresa(usuarioEmpresa, usuario);
+            UsuarioEmpresaDTO usuarioActualizado = usuarioEmpresaService.updateUsuarioEmpresa(usuarioEmpresa, request.getUsuario(), request.getPassword());
 
             HttpBodyResponse data = new HttpBodyResponse.Builder()
                     .message("Usuario actualizado con éxito")
