@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.api.sgri.mapper.ArchivoComentarioMapper;
 
+import com.api.sgri.model.ArchivoAdjunto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -181,33 +182,36 @@ public class ComentarioController {
         }
     }
 
-    @GetMapping("/archivoComentario/{nombreArchivo}")
-    public ResponseEntity<Resource> mostrarArchivo(@PathVariable String nombreArchivo) throws IOException, NotFoundException {
+    @GetMapping("/archivoComentario/{rutaArchivo}")
+    public ResponseEntity<Resource> mostrarArchivo(@PathVariable String rutaArchivo) throws IOException, NotFoundException {
 
-        ArchivoComentario archivoComentario = archivoComentarioService.findByNombre(nombreArchivo);
+        String decodedFileName = java.net.URLDecoder.decode(rutaArchivo, "UTF-8");
+        ArchivoComentario archivoComentario = archivoComentarioService.findByRutaArchivo(decodedFileName);
+
+
 
         if (archivoComentario  == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Path rutaArchivo = Paths.get(archivoComentarioService.getDirectorioArchivos())
+        Path ruta = Paths.get(archivoComentarioService.getDirectorioArchivos())
                 .resolve(archivoComentario.getRuta())
                 .normalize();
 
-        Resource recurso = new UrlResource(rutaArchivo.toUri());
+        Resource recurso = new UrlResource(ruta.toUri());
 
         if (!recurso.exists() || !recurso.isReadable()) {
             return ResponseEntity.notFound().build();
         }
 
-        String contentType = Files.probeContentType(rutaArchivo);
+        String contentType = Files.probeContentType(ruta);
         if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nombreArchivo + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + rutaArchivo + "\"")
                 .body(recurso);
     }
 

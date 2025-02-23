@@ -81,10 +81,18 @@ public class ArchivoComentarioService {
         return archivoComentario;
     }
 
-    public ArchivoComentario findByNombre(String nombreArchivo) throws NotFoundException {
-        ArchivoComentario archivo = archivoComentarioRepository.findByNombre(nombreArchivo);
+    public ArchivoComentario findByRutaArchivo(String rutaArchivo) throws NotFoundException {
+        ArchivoComentario archivo = archivoComentarioRepository.findByRuta(rutaArchivo);
         if(archivo == null){
-            throw new NotFoundException("Archivo no encontrado con el nombre " + nombreArchivo);
+            throw new NotFoundException("Archivo no encontrado con la ruta " + rutaArchivo);
+        }
+        return archivo;
+    }
+
+    public ArchivoComentario findByNombre(String nombre) throws NotFoundException {
+        ArchivoComentario archivo = archivoComentarioRepository.findByNombre(nombre);
+        if(archivo == null){
+            throw new NotFoundException("Archivo no encontrado con la ruta " + nombre);
         }
         return archivo;
     }

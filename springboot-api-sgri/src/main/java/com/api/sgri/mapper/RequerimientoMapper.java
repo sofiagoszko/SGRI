@@ -59,8 +59,6 @@ public class RequerimientoMapper {
             requerimiento.setComentarios(new ArrayList<>());
         }
 
-
-
         if (requerimiento.getArchivosAdjuntos() != null) {
             String url = baseUrl+"/api/requerimiento/archivoAdjunto/";
             List<String> archivosAdjuntos = requerimiento.getArchivosAdjuntos().stream()

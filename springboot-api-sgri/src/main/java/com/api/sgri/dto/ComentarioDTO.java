@@ -12,7 +12,7 @@ public class ComentarioDTO {
     private String asunto;
     private String descripcion;
     private String fecha_hora;
-    private Long usuarioEmisorComentario;
+    private UsuarioEmpresaDTO usuarioEmisorComentario;
     private Long requerimiento;
     private List<String> archivosComentario;
 
@@ -21,7 +21,7 @@ public class ComentarioDTO {
     }
 
     public ComentarioDTO(String asunto, String descripcion, String fecha_hora,
-            Long usuarioEmisorComentario, Long requerimiento) {
+                         UsuarioEmpresaDTO usuarioEmisorComentario, Long requerimiento) {
         this.asunto = asunto;
         this.descripcion = descripcion;
         this.fecha_hora = fecha_hora;
