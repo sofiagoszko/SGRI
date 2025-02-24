@@ -309,7 +309,7 @@ const ExplorarSolicitudes = () => {
                     {req.tipoRequerimiento.codigo}
                   </td>
                   <td scope="col" className="align-middle">
-                    {`${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}`}
+                    {req.usuarioDestinatario ? `${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}` : " "}
                   </td>
                   <td scope="col" className="align-middle">
                     {new Date(req.fechaHora).toLocaleDateString()}
