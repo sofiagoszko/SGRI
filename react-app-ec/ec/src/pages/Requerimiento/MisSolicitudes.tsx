@@ -235,7 +235,7 @@ const MisSolicitudes = () => {
               </tr>
             </thead>
             <tbody>
-              {requerimientosFiltrados.map((req) => (
+              {currentRequerimientos.map((req) => (
                 <tr key={req?.id}>
                   <td scope="col">
                     <div className="d-flex gap-2 align-items-center">
