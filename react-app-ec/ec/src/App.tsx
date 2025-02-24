@@ -9,6 +9,7 @@ import NuevoRequerimiento from "./pages/Requerimiento/Nuevo";
 import MisAsignaciones from "./pages/Requerimiento/MisAsignaciones";
 import MisSolicitudes from "./pages/Requerimiento/MisSolicitudes";
 import Solicitudes from "./pages/Requerimiento/Solicitudes";
+import EditarRequerimiento from "./pages/Requerimiento/EditarRequerimiento.js";
 import { AuthProvider } from "./utils/AuthContext.jsx";
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             element={<MisSolicitudes />}
           />
           <Route path="/requerimiento/solicitudes" element={<Solicitudes />} />
+          <Route path="/requerimiento/editar/:id" element={<EditarRequerimiento />}/>
         </Routes>
         </AuthProvider>
       </Router>
