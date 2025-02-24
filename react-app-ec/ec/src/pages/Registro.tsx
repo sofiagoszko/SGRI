@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Registro.css";
+import Swal from "sweetalert2";
 
 function Login() {
   // Estado para los campos del formulario y el error
@@ -48,6 +49,13 @@ function Login() {
       if (response.ok) {
         //const data = await response.json();
         console.log(data);
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "¡Usuario creado con éxito!",
+        }).then(() => {
+          navigate("/");
+        });
         navigate("/");
       } else {
         setAlertMessage(data.userFriendlyMessage);

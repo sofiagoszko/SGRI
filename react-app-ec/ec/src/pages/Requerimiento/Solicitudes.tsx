@@ -292,9 +292,6 @@ const ExplorarSolicitudes = () => {
                   <td scope="col">
                     <div className="d-flex gap-2 align-items-center">
                       {req.codigo}
-                      <button className="btn" onClick={() => showModal(req)}>
-                        <i className="bi bi-eye"></i>
-                      </button>
                     </div>
                   </td>
                   <td scope="col" className="align-middle">
@@ -309,7 +306,9 @@ const ExplorarSolicitudes = () => {
                     {req.tipoRequerimiento.codigo}
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.usuarioDestinatario ? `${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}` : " "}
+                    {req.usuarioDestinatario
+                      ? `${req.usuarioDestinatario.nombre} ${req.usuarioDestinatario.apellido}`
+                      : " "}
                   </td>
                   <td scope="col" className="align-middle">
                     {new Date(req.fechaHora).toLocaleDateString()}

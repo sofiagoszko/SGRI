@@ -109,6 +109,22 @@ const Nuevo = () => {
     setReqSeleccionado(undefined);
     setMostrarModal(false);
   };
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [itemsPorPagina] = useState(5);
+  const idexUltimoItem = paginaActual * itemsPorPagina;
+  const idexPrimerItem = idexUltimoItem - itemsPorPagina;
+  const currentRequerimientos = requerimientosFiltrados.slice(
+    idexPrimerItem,
+    idexUltimoItem
+  );
+  const pageNumbers = [];
+  for (
+    let i = 1;
+    i <= Math.ceil(requerimientosFiltrados.length / itemsPorPagina);
+    i++
+  ) {
+    pageNumbers.push(i);
+  }
   return (
     <Layout>
       <section className="content-placeholder bg-white rounded-4 align-self-center flex-grow-1 mb-5 p-5">
@@ -250,7 +266,7 @@ const Nuevo = () => {
                     {`${req.usuarioEmisor.nombre} ${req.usuarioEmisor.apellido}`}
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.fechaHora}
+                    {new Date(req.fechaHora).toLocaleDateString()}
                   </td>
                   <td scope="col" className="align-middle">
                     {req.asunto}
@@ -264,6 +280,49 @@ const Nuevo = () => {
           </table>
         </div>
         {/* Fin Tabla */}
+
+        {/* Paginación */}
+        <div>
+          <ul className="pagination pagination-sm">
+            <li className={`page-item ${paginaActual === 1 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => setPaginaActual(paginaActual - 1)}
+                disabled={paginaActual === 1}
+              >
+                <span aria-hidden="true">&laquo;</span>
+              </button>
+            </li>
+            {pageNumbers.map((number) => (
+              <li
+                key={number}
+                className={`page-item ${
+                  paginaActual === number ? "active" : ""
+                }`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => setPaginaActual(number)}
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
+            <li
+              className={`page-item ${
+                paginaActual === pageNumbers.length ? "disabled" : ""
+              }`}
+            >
+              <button
+                className="page-link"
+                onClick={() => setPaginaActual(paginaActual + 1)}
+                disabled={paginaActual === pageNumbers.length}
+              >
+                <span aria-hidden="true">&raquo;</span>
+              </button>
+            </li>
+          </ul>
+        </div>
       </section>
       <ModalDetalleRequerimiento
         requerimiento={reqSeleccionado}

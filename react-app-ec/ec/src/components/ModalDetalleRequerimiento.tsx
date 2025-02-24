@@ -162,7 +162,9 @@ const ModalDetalleRequerimiento = ({
                     <p>
                       <b>Usuario Propietario</b>
                       <br />
-                      {`${requerimiento.usuarioDestinatario.nombre} ${requerimiento.usuarioDestinatario.apellido}`}
+                      {requerimiento.usuarioDestinatario
+                        ? `${requerimiento.usuarioDestinatario.nombre} ${requerimiento.usuarioDestinatario.apellido}`
+                        : " "}
                     </p>
                   </div>
                   <div className="col-6 mb-3">
