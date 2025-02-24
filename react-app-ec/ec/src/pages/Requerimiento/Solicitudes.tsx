@@ -17,7 +17,11 @@ const ExplorarSolicitudes = () => {
   const [fechaHasta, setFechaHasta] = useState("");
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const manejadorFiltros = (tipo, valor) => {
-    setFiltros({ ...filtros, [tipo]: valor });
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      [tipo]: valor,
+    }));
+    setPaginaActual(1);
   };
   const [filtros, setFiltros] = useState({
     categoriaTipo: "",
@@ -38,6 +42,7 @@ const ExplorarSolicitudes = () => {
     });
     setFechaDesde("");
     setFechaHasta("");
+    setPaginaActual(1);
   };
 
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -119,7 +124,8 @@ const ExplorarSolicitudes = () => {
       filtroDesde &&
       filtroHasta
     );
-  });
+  }).sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora));
+  
   const showModal = (requerimiento: Requerimiento) => {
     setReqSeleccionado(requerimiento);
     setMostrarModal(true);

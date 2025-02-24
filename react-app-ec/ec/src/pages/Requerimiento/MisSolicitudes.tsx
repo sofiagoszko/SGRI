@@ -19,7 +19,11 @@ const MisSolicitudes = () => {
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const manejadorFiltros = (tipo, valor) => {
-    setFiltros({ ...filtros, [tipo]: valor });
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      [tipo]: valor,
+    }));
+    setPaginaActual(1);
   };
   const [filtros, setFiltros] = useState({
     categoriaTipo: "",
@@ -35,6 +39,7 @@ const MisSolicitudes = () => {
       usuarioDestinatario: "",
     });
     setCategoriasSeleccionables([]);
+    setPaginaActual(1);
   };
   const [requerimientos, setRequerimientos] = useState<Requerimiento[]>([]);
 
@@ -97,7 +102,9 @@ const MisSolicitudes = () => {
       req.usuarioDestinatario.id == filtros.usuarioDestinatario;
 
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
-  });
+  }).sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora)); 
+
+  
   const showModal = (requerimiento: Requerimiento) => {
     setReqSeleccionado(requerimiento);
     setMostrarModal(true);

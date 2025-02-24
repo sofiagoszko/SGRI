@@ -20,7 +20,11 @@ const Nuevo = () => {
   >(undefined);
   const [categoriasSeleccionables, setCategoriasSeleccionables] = useState([]);
   const manejadorFiltros = (tipo, valor) => {
-    setFiltros({ ...filtros, [tipo]: valor });
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      [tipo]: valor,
+    }));
+    setPaginaActual(1);
   };
   const [filtros, setFiltros] = useState({
     categoriaTipo: "",
@@ -36,6 +40,7 @@ const Nuevo = () => {
       usuarioEmisor: "",
     });
     setCategoriasSeleccionables([]);
+    setPaginaActual(1);
   };
   const [requerimientos, setRequerimientos] = useState<Requerimiento[]>([]);
 
@@ -99,7 +104,7 @@ const Nuevo = () => {
       req.usuarioEmisor.id == filtros.usuarioEmisor;
 
     return filtroCategoria && filtroEstado && filtroTipo && filtroUsuario;
-  });
+  }).sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora)); ;
 
   const showModal = (requerimiento: Requerimiento) => {
     setReqSeleccionado(requerimiento);
@@ -241,7 +246,7 @@ const Nuevo = () => {
               </tr>
             </thead>
             <tbody>
-              {requerimientosFiltrados.map((req) => (
+              {currentRequerimientos.map((req) => (
                 <tr key={req?.id}>
                   <td scope="col">
                     <div className="d-flex gap-2 align-items-center">
