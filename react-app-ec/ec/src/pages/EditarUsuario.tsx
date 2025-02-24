@@ -173,10 +173,10 @@ function Login() {
               onChange={onInputChange}
             >
               <option value="">Seleccione un departamento</option>
-              <option value="Departamento 1">Departamento 1</option>
-              <option value="Departamento 2">Departamento 2</option>
-              <option value="Departamento 3">Departamento 3</option>
-              <option value="Departamento 4">Departamento 4</option>
+              <option value="Departamento 2">Ventas</option>
+              <option value="Departamento 3">Compras</option>
+              <option value="Departamento 4">Contable</option>
+              <option value="Departamento 5">TI</option>
             </select>
           </div>
           <div className="mb-3 col-12 offset-md-1 col-md-5">
@@ -191,10 +191,11 @@ function Login() {
               onChange={onInputChange}
             >
               <option value="">Seleccione un cargo</option>
-              <option value="Cargo 1">Cargo 1</option>
-              <option value="Cargo 2">Cargo 2</option>
-              <option value="Cargo 3">Cargo 3</option>
-              <option value="Cargo 4">Cargo 4</option>
+              <option value="Cargo 1">Gerente</option>
+              <option value="Cargo 2">Director</option>
+              <option value="Cargo 3">Jefe</option>
+              <option value="Cargo 4">Empleado</option>
+              <option value="Cargo 4">Analista</option>
             </select>
           </div>
           <div className="mb-3 col-12 col-md-5">
