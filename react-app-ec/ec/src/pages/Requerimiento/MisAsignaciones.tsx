@@ -252,7 +252,9 @@ const Nuevo = () => {
                     </div>
                   </td>
                   <td scope="col" className="align-middle">
-                    {req.estado}
+                    <div className="d-flex gap-2 align-items-center">
+                      {req.estado}
+                    </div>
                   </td>
                   <td scope="col" className="align-middle">
                     <span className={ColoresEstado[req.prioridad!]}>
