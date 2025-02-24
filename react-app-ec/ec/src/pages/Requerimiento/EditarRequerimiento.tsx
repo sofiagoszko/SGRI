@@ -54,7 +54,7 @@ function EditarRequerimiento() {
         categoriaTipo: data.categoriaTipo || "",
         tipoRequerimiento: data.tipoRequerimiento?.codigo || "",
         tipoRequerimientoId: data.tipoRequerimiento?.id || "",
-        usuarioEmisor: data.usuarioEmisor?.userName || "",
+        usuarioEmisor: `${data.usuarioEmisor?.nombre || ""} ${data.usuarioEmisor?.apellido || ""}`,
         usuarioEmisorId: data.usuarioEmisor?.id || "",
         usuarioDestinatario: data.usuarioDestinatario?.id || "",
       });
