@@ -197,6 +197,7 @@ const MisSolicitudes = () => {
               <option value="" hidden></option>
               <option value="Abierto">Abierto</option>
               <option value="Asignado">Asignado</option>
+              <option value="Cerrado">Cerrado</option>
             </select>
             <label htmlFor="tipos">Estado</label>
           </div>
