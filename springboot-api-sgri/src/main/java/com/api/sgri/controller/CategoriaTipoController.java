@@ -18,19 +18,16 @@ public class CategoriaTipoController {
     @Autowired
     private CategoriaTipoService categoriaTipoService;
 
-    // Obtener todas las categorías
     @GetMapping("/todas")
     public ResponseEntity<List<CategoriaTipo>> getCategorias() {
         return ResponseEntity.ok(categoriaTipoService.obtenerCategorias());
     }
 
-    // Obtener categorías de un tipo de requerimiento específico
     @GetMapping("/tipo/{id}")
     public ResponseEntity<List<CategoriaTipo>> getCategoriasPorTipo(@PathVariable Long id) {
         return ResponseEntity.ok(categoriaTipoService.obtenerCategoriasPorTipo(id));
     }
 
-    // Crear una nueva categoría
     @PostMapping("/nueva")
     public ResponseEntity<CategoriaTipo> createCategoria(@RequestBody Map<String, Object> request) {
         String descripcion = (String) request.get("descripcion");

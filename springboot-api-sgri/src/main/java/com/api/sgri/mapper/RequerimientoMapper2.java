@@ -83,7 +83,6 @@ public class RequerimientoMapper2 {
     public Requerimiento fromDTO(RequerimientoDTO2 dto, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> Comentario) throws NotFoundException {
         Requerimiento requerimiento = new Requerimiento();
 
-        // Mapear atributos básicos
         requerimiento.setId(dto.getId());
         requerimiento.setAsunto(dto.getAsunto());
         requerimiento.setCodigo(dto.getCodigo());

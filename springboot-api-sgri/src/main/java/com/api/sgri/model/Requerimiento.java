@@ -41,26 +41,26 @@ public class Requerimiento {
     @Column(name = "categoria")
     private String categoria;
 
-    //un requerimiento tiene un tipo asociado
+
     @ManyToOne
     @JoinColumn(name = "oid_tipo_requerimiento", nullable = false)
     @JsonIgnore
     private TipoRequerimiento tipoRequerimiento;
-    //un requerimiento tiene una usuario emisor
+
     @ManyToOne
     @JoinColumn(name = "oid_usuario_emisor", nullable = false)
     private UsuarioEmpresa usuarioEmisor;
 
-    //un requerimiento tiene una usuario destinatario
+
     @ManyToOne
     @JoinColumn(name = "oid_usuario_destinatario", nullable = true)
     private UsuarioEmpresa usuarioDestinatario;
 
-    //un requerimiento puede tener asociados muchos comentarios
+
     @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
 
-    //un requerimiento puede tener asociados varios archivos
+
     @OneToMany(mappedBy = "requerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ArchivoAdjunto> archivosAdjuntos = new ArrayList<>(); 
 

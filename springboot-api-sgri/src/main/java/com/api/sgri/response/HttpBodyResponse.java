@@ -10,7 +10,6 @@ public class HttpBodyResponse {
     private String path; 
     private String userFriendlyMessage;
 
-    // Constructor privado para la clase HttpBodyResponse
     private HttpBodyResponse(Builder builder) {
         this.status = builder.status;
         this.statusCode = builder.statusCode;
@@ -21,7 +20,6 @@ public class HttpBodyResponse {
         this.userFriendlyMessage = builder.userFriendlyMessage;
     }
 
-    // Getters
     public String getStatus() {
         return status;
     }
@@ -50,7 +48,7 @@ public class HttpBodyResponse {
         return userFriendlyMessage;
     }
 
-    // Clase Builder
+
     public static class Builder {
         private String status;
         private int statusCode;

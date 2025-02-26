@@ -93,9 +93,7 @@ public class TipoRequerimientoController {
     @PostMapping("/{id}/categoria")
     public ResponseEntity<Object> createCategoria(@PathVariable Long id, @RequestBody CategoriaTipoDTO categoriaDTO) {
         try {
-            // Verificar si el tipo de requerimiento existe
-            // TipoRequerimiento tipoRequerimiento = tipoRequerimientoService
-            //         .getTipoRequerimentoById(categoriaDTO.getTipoRequerimiento().getId());
+
             TipoRequerimiento tipoRequerimiento = tipoRequerimientoService.getTipoRequerimentoById(id);
 
             CategoriaTipo categoria = new CategoriaTipo();

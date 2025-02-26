@@ -28,22 +28,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Desactiva CSRF para autenticación con JWT
-                .cors(cors -> corsFilter()) // Habilita CORS
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> corsFilter())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuario-empresa/", "/api/usuario-empresa/registracion",
                                 "/api/usuario-empresa/credenciales", "/api/usuario-empresa/usuarios/email/**",
-                                "api/requerimiento/archivoAdjunto/**", "/api/requerimiento/archivoComentario/**").permitAll()  // Rutas públicas
+                                "api/requerimiento/archivoAdjunto/**", "/api/requerimiento/archivoComentario/**").permitAll()
                         .requestMatchers("/api/**").authenticated() // Protege todas las rutas de la API
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Filtro para validar el JWT
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();  // Configura el codificador de contraseñas
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -51,7 +51,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*"); // Permite todos los orígenes (dominios)
+        config.addAllowedOriginPattern("*");
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); 
         source.registerCorsConfiguration("/**", config);

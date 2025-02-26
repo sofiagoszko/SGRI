@@ -38,17 +38,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 Claims claims = JwtToken.getPayload(token);
                 if (claims != null) {
-                    String userName = claims.getSubject();  // Extraído del JWT
-                    String role = claims.get("role", String.class);  // Extraído del JWT
+                    String userName = claims.getSubject();
+                    String role = claims.get("role", String.class);
                     logger.info("Token válido para el usuario: " + userName);
 
-                    // Crear la lista de roles (GrantedAuthority)
+
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-                    // Crear el token de autenticación
+
                     Authentication authentication = new UsernamePasswordAuthenticationToken(userName, null, authorities);
 
-                    // Establecer el token de autenticación en el contexto de seguridad de Spring
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
                     request.setAttribute("userName", userName);
@@ -56,13 +56,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     
                 } else {
                     logger.warn("Token inválido o expirado");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // Token inválido
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.getWriter().write("Token inválido o expirado");
                     return;
                 }
             } catch (JwtException e) {
                 logger.error("Error procesando el token: " + e.getMessage());
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // Token inválido
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Error procesando el token");
                 return;
             }

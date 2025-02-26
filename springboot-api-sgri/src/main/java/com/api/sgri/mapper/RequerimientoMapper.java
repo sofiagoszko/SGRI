@@ -79,7 +79,7 @@ public class RequerimientoMapper {
     public Requerimiento fromDTO(RequerimientoDTO dto, TipoRequerimiento tipoRequerimiento, UsuarioEmpresa usuarioEmisor, UsuarioEmpresa usuarioDestinatario, List<Comentario> Comentario) throws NotFoundException {
         Requerimiento requerimiento = new Requerimiento();
     
-        // Mapear atributos básicos
+
         requerimiento.setId(dto.getId());
         requerimiento.setAsunto(dto.getAsunto());
         requerimiento.setCodigo(dto.getCodigo());
@@ -125,7 +125,7 @@ public class RequerimientoMapper {
             return new ArrayList<>();
         }
         return archivosAdjuntos.stream()
-            .map(ArchivoAdjunto::getRuta) // Suponiendo que 'getRuta()' devuelve la ruta del archivo
+            .map(ArchivoAdjunto::getRuta)
             .collect(Collectors.toList());
     }
 

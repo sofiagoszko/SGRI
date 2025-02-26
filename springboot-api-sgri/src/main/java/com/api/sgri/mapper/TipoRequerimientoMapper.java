@@ -24,7 +24,6 @@ public class TipoRequerimientoMapper {
         dto.setCodigo(tipoRequerimiento.getCodigo());
         dto.setDescripcion(tipoRequerimiento.getDescripcion());
 
-        //agregar las categorias
         for(CategoriaTipo categoriaTipo: tipoRequerimiento.getCategorias()){
             CategoriaTipoDTO categoria = categoriaTipoMapper.toDTO(categoriaTipo);
             dto.nuevaCategoria(categoria);
@@ -40,7 +39,6 @@ public class TipoRequerimientoMapper {
         tipoRequerimiento.setCodigo(dto.getCodigo());
         tipoRequerimiento.setDescripcion(dto.getDescripcion());
 
-        //agregar las categorias
         for(CategoriaTipoDTO categoriaTipoDTO: dto.getCategorias()){
             CategoriaTipo categoria = new CategoriaTipo();
             categoria.setId(categoriaTipoDTO.getId());

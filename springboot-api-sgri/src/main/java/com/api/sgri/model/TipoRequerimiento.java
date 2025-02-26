@@ -22,11 +22,10 @@ public class TipoRequerimiento {
     private String descripcion;
 
 
-    //un tipo de requerimiento puede tener asociados muchos requerimientos
     @OneToMany(mappedBy = "tipoRequerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Requerimiento> requerimientos;
 
-    //un tipo de requerimiento puede tener asociados muchas categorias
+
     @OneToMany(mappedBy = "tipoRequerimiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CategoriaTipo> categorias;
 

@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class JwtToken {
 
     private static final String SECRET_KEY = "Diseno_de_Sistemas_de_Informacion_2024";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 horas    
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
 
     public static Builder generateToken() {
         return new Builder();
@@ -38,7 +38,7 @@ public class JwtToken {
         }
     }
 
-    // Clase Builder para crear el token JWT
+
     public static class Builder {
 
         private Map<String, Object> claims;
@@ -62,13 +62,11 @@ public class JwtToken {
         }
 
         public Builder setTimeMinutes(int value) {
-            // convertir minutos a milisegundos
             this.time = (long) value * 60 * 1000;
             return this;
         }
 
         public Builder setTimeHours(int value) {
-            // convertir horas a milisegundos
             this.time = (long) value * 60 * 60 * 1000;
             return this;
         }

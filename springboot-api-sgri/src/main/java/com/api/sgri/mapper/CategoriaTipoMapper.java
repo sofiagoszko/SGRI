@@ -12,7 +12,6 @@ public class CategoriaTipoMapper {
         CategoriaTipoDTO categoriaTipoDTO = new CategoriaTipoDTO();
         categoriaTipoDTO.setId(categoriaTipo.getId());
         categoriaTipoDTO.setDescripcion(categoriaTipo.getDescripcion());
-        //categoriaTipoDTO.setTipoRequerimiento(categoriaTipo.getTipoRequerimiento());
         return categoriaTipoDTO;
     }
 }

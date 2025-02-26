@@ -83,7 +83,7 @@ public class UsuarioEmpresaController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         } catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe usuario con id: " + id);
+            return responseFactory.errorNotFound("Recurso no encontrado");
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }
@@ -101,7 +101,7 @@ public class UsuarioEmpresaController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         } catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe usuario con email: " + email);
+            return responseFactory.errorNotFound("Recurso no encontrado");
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }
@@ -134,7 +134,7 @@ public class UsuarioEmpresaController {
         } catch (BadRequestException e) {
             return responseFactory.badRequest(e.getMessage());
         } catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe usuario con nombre de usuario: " + userName);
+            return responseFactory.errorNotFound("Recurso no encontrado");
         } catch (UnauthorizedException e) {
             return responseFactory.unauthorizedError();
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public class UsuarioEmpresaController {
 
             return ResponseEntity.status(data.getStatusCode()).body(data);
         }catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe usuario con id: " + id);
+            return responseFactory.errorNotFound("Recurso no encontrado");
         } catch (DuplicateUserException e) {
             return responseFactory.duplicateUserError();
         } catch (Exception e) {
@@ -205,7 +205,7 @@ public class UsuarioEmpresaController {
     
             return ResponseEntity.status(data.getStatusCode()).body(data);
         } catch (NotFoundException e) {
-            return responseFactory.errorNotFound("No existe usuario con id: " + id);
+            return responseFactory.errorNotFound("Recurso no encontrado");
         } catch (Exception e) {
             return responseFactory.internalServerError();
         }

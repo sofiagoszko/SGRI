@@ -9,7 +9,7 @@ public class CategoriaTipoDTO {
     
     private Long id;
     private String descripcion;
-    //private TipoRequerimiento tipoRequerimiento;
+
 
     public CategoriaTipoDTO(){
         
@@ -18,7 +18,6 @@ public class CategoriaTipoDTO {
     public CategoriaTipoDTO(Long id, String descripcion, TipoRequerimiento tipoRequerimiento) {
         this.id = id;
         this.descripcion = descripcion;
-        //this.tipoRequerimiento = tipoRequerimiento;
     }
 
     

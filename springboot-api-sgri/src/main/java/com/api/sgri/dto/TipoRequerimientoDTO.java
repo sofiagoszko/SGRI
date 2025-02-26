@@ -9,7 +9,6 @@ public class TipoRequerimientoDTO {
     private Long id;
     private String codigo;
     private String descripcion;
-    //private List<RequerimientoDTO> requerimientos;
     private List<CategoriaTipoDTO> categorias = new ArrayList<>();
 
     public TipoRequerimientoDTO(){
@@ -20,7 +19,6 @@ public class TipoRequerimientoDTO {
         this.id = id;
         this.codigo = codigo;
         this.descripcion = descripcion;
-        //this.requerimientos = requerimientos;
         this.categorias = (categorias != null) ? categorias : new ArrayList<>();
     }
 

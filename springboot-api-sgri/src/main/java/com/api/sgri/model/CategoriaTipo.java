@@ -28,15 +28,11 @@ public class CategoriaTipo {
     @Column(name = "descripcion")
     private String descripcion;
 
-    //una categoria tiene un tipo asociado
     @ManyToOne
     @JoinColumn(name = "oid_tipo_requerimiento", nullable = false)
     @JsonIgnore
     private TipoRequerimiento tipoRequerimiento;
 
-    //una categoria puede tener asociados muchos requerimientos
-//    @OneToMany(mappedBy = "categoriaTipo", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Requerimiento> requerimientos;
 
 
 

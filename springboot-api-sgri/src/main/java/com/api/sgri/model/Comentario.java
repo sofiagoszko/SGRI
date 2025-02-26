@@ -33,13 +33,13 @@ public class Comentario {
     @Column(name = "fecha_hora")
     private String fecha_hora;
 
-    //un comentario tiene una usuario emisor
+
     @ManyToOne
     @JoinColumn(name = "oid_usuario_emisor", nullable = false)
     @JsonIgnore
     private UsuarioEmpresa usuarioEmisorComentario;
 
-    //una comentario esta asociado a un requerimiento
+
     @ManyToOne
     @JoinColumn(name = "oid_requerimiento", nullable = false)
     @JsonIgnore
@@ -52,7 +52,7 @@ public class Comentario {
 
 
     public Comentario() {
-        // Constructor vacío necesario para instanciar sin argumentos
+
     }
 
     public Comentario(String asunto, String descripcion, String fecha_hora, UsuarioEmpresa usuarioEmisorComentario, Requerimiento requerimiento ) {

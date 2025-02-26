@@ -33,7 +33,7 @@ public class ComentarioMapper2 {
     private UsuarioEmpresaMapper usuarioEmpresaMapper;
 
 
-    // Convertir de Comentario a ComentarioDTO
+
     @Mappings({
             @Mapping(target = "archivosComentario", expression = "java(mapArchivosComentario(comentario.getArchivosComentario()))")
     })
@@ -46,7 +46,7 @@ public class ComentarioMapper2 {
         dto.setFecha_hora(comentario.getFecha_hora());
         dto.setUsuarioEmisorComentario(usuarioEmpresaMapper.toDTO(comentario.getUsuarioEmisorComentario()));
         dto.setRequerimiento(comentario.getRequerimiento().getId());
-        // Mapear archivos adjuntos de Comentario
+
         if (comentario.getArchivosComentario() != null) {
             String url = baseUrl+"/api/requerimiento/archivoComentario/";
             List<String> archivosComentario = comentario.getArchivosComentario().stream()
@@ -58,7 +58,7 @@ public class ComentarioMapper2 {
         return dto;
     }
 
-    // Convertir de ComentarioDTO a Comentario
+
     @Mappings({
             @Mapping(target = "archivosComentario", expression = "java(mapArchivosComentarioDTO(dto.getArchivosComentario()))")
     })
@@ -69,7 +69,7 @@ public class ComentarioMapper2 {
         comentario.setDescripcion(dto.getDescripcion());
         comentario.setFecha_hora(dto.getFecha_hora());
         comentario.setUsuarioEmisorComentario(usuarioEmpresaMapper.fromDTO(dto.getUsuarioEmisorComentario()));
-        // Mapear archivos adjuntos de ComentarioDTO a Comentario
+
         if (dto.getArchivosComentario() != null) {
             List<ArchivoComentario> archivosComentario = new ArrayList<>();
             for (String archivoRuta : dto.getArchivosComentario()) {

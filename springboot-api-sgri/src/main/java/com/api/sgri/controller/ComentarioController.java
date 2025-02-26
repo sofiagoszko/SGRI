@@ -245,7 +245,6 @@ public class ComentarioController {
     @GetMapping("/comentarios/{idComentario}/archivos/{nombre}")
     public ResponseEntity<Object> getArchivo(@PathVariable Long idComentario, @PathVariable String nombre) {
         try {
-            //ArchivoComentario archivoComentario = archivoComentarioService.getArchivoComentarioById(idComentario);
             Long idArchivo = archivoComentarioService.findByNombre(nombre).getId();
             ArchivoComentario archivoComentario = comentarioService.getArchivoComentarioById(idComentario, idArchivo);
 

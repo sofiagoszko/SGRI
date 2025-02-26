@@ -43,17 +43,17 @@ public class UsuarioEmpresa {
     @Column(name = "foto_perfil")
     private String fotoPerfil;
 
-    //un usuario empresa puede tener muchos requerimientos emitidos
+
     @JsonIgnore
     @OneToMany(mappedBy = "usuarioEmisor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Requerimiento> requerimientosEmitidos;
 
-    //un usuario empresa puede ser propietario de muchos requerimientos
+
     @JsonIgnore
     @OneToMany(mappedBy = "usuarioDestinatario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Requerimiento> requerimientosPropietario;
 
-    //un usuario empresa puede emitir muchos comentarios
+
     @JsonIgnore
     @OneToMany(mappedBy = "usuarioEmisorComentario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
@@ -88,24 +88,5 @@ public class UsuarioEmpresa {
         this.departamento = departamento;
     }
 
-    
-//    public void nuevoRequerimientoEmitido(Requerimiento requerimiento){
-//        requerimientosEmitidos.add(requerimiento);
-//    }
-//
-//    public void nuevoRequerimientoPropietario(Requerimiento requerimiento){
-//        requerimientosPropietario.add(requerimiento);
-//    }
-//    public void nuevoComentario(Comentario comentario){
-//        comentarios.add(comentario);
-//    }
-
-    public String getFotoPerfil() {
-        return fotoPerfil;
-    }
-
-    public void setFotoPerfil(String fotoPerfil) {
-        this.fotoPerfil = fotoPerfil;
-    }
     
 }
